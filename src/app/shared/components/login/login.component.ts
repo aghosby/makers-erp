@@ -180,7 +180,7 @@ export class LoginComponent implements OnInit {
             console.log(res);
             if(res.status == 200) {
               this.apiLoading = false;
-              if(res.data.email == 'aceerp@aceall.io') {
+              if(res.data.email == 'erp@makersorbit.com') {
                 this.route.navigate(['app/aceerp']);
               }
               else if(res.data.isSuperAdmin && res.data.companyFeatures.subscriptionStatus.isActive) {
