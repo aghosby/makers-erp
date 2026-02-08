@@ -2,28 +2,42 @@
 <div class="page-wrap">
     <div class="inner-wrap">
         <div class="main-container">
-            <div class="col-sec">
+            <!-- <div class="col-sec">
                 <h2>{{dateTime | date: 'EE, MMMM d'}}</h2>
                 <h1>{{dateTime | date: 'hh:mm a'}}</h1>
                 <div class="image">
                     <img src="./assets/images/photos/acehr1.png" alt="human-resources">
                 </div>
-            </div>
+            </div> -->
             <div class="col-sec">
                 <div class="login-container">
                     <div class="logo">
-                        <img src="./assets/images/brand/acehr-logo.png" alt="acehr-logo">
+                        <!-- <img src="./assets/images/brand/acehr-logo.png" alt="acehr-logo"> -->
+                        <div class="orbit-wrap sm">
+                            <div class="digital-ball">
+                                <div class="overlay"></div>
+                                <div class="globe">
+                                    <div class="globe-wrap">
+                                        <div class="circle"></div>
+                                        <div class="circle"></div>
+                                        <div class="circle"></div>
+                                        <div class="circle-hor"></div>
+                                        <div class="circle-hor-middle"></div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
                     </div>
         
                     <div class="intro">
                         <div *ngIf="loggingIn" class="heading">
-                            <span>Welcome to AceHR<img src="https://silo-inc.com/wp-content/themes/wp-silo/dist/img/waving_hand.gif" alt=""></span>
+                            <span>Welcome to Makers ERP<img src="https://silo-inc.com/wp-content/themes/wp-silo/dist/img/waving_hand.gif" alt=""></span>
                         </div>
                         <div *ngIf="loggingIn" class="preamble">Please input your details to gain access.</div>
-                        <div *ngIf="forgotPass" class="heading">
+                        <div *ngIf="forgotPass && !loggingIn" class="heading">
                             <span>Forgot Password</span>
                         </div>
-                        <div *ngIf="forgotPass" class="preamble mt-lg-3 mt-3">Enter your verified email</div>
+                        <div *ngIf="forgotPass && !loggingIn" class="preamble mt-lg-3 mt-3">Enter your verified email</div>
                         <div *ngIf="!forgotPass && !loggingIn" class="heading">Set your password</div>
                     </div>
         
@@ -172,10 +186,12 @@
             
                             <div *ngIf="!forgotPass" class="btn-hld">
                                 <button (click)="setPassword()" class="cta primary-bkg icon lg">Save & Login</button>
+                                <p class="accountcheck mt-lg-2">Have an account? <span (click)="loggingIn = !loggingIn">Login</span></p>
                             </div>
         
                             <div *ngIf="forgotPass" class="btn-hld">
                                 <button (click)="forgotPassword()" class="cta primary-bkg icon lg">Submit Email</button>
+                                <p class="accountcheck mt-lg-2">Have an account? <span (click)="loggingIn = !loggingIn">Login</span></p>
                             </div>
             
                             <!-- <div class="disclaimer"><i class="bi bi-check-circle-fill"></i> By creating an account and signing in, it means you agree to our <a href="#">Terms and Condition</a> and <a href="#">Privacy Policy</a></div> -->
@@ -184,6 +200,10 @@
                     </form>
                     
                 </div>
+            </div>
+
+            <div class="footer-img">
+                <img src="./assets/images/photos/city.svg" alt="human-resources">
             </div>
         </div>
     </div>

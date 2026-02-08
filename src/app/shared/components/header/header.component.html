@@ -24,26 +24,26 @@
         <span class="icon text-danger" (click)="createMessage()" >
             <app-icon [iconName]="'shieldDoc'" [iconWidth]="24" [iconHeight]="24" title="Message Support"></app-icon>
         </span>
-        <span class="icon" [matMenuTriggerFor]="notifications">
+        <span class="icon" [matMenuTriggerFor]="notificationsMenu">
             <app-icon [iconName]="'bell'" [iconWidth]="24" [iconHeight]="24" title="Notifications"></app-icon>
             <div class="badge">2</div>
         </span>
-        <mat-menu #notifications="matMenu" xPosition="before" class="xl">
+        <mat-menu #notificationsMenu="matMenu" xPosition="before" class="xl">
             <div class="listed-items my-3 px-3">
-                <div role='button' class="item">
-                    <div class="icon text-warning">
-                        <app-icon [iconName]="'calendarTime'" [iconWidth]="28" [iconHeight]="28"></app-icon>
+                <div role='button' *ngFor="let item of notifications" class="item">
+                    <div class="icon" [class.text-danger]="item.notificationType === 'Leave Request'">
+                        <app-icon *ngIf="item.notificationType === 'Leave Request'" [iconName]="'calendarTime'" [iconWidth]="28" [iconHeight]="28"></app-icon>
                     </div>
                     <div class="content">
                         <div class="det">
-                            <div class="major">You have a new absence request for approval.</div>
-                            <div class="minor d-flex align-items-center justify-content-between mt-1">Steven Maddison <span>12 mins ago </span></div>
+                            <div class="major">{{item.notificationContent}}</div>
+                            <div class="minor d-flex align-items-center justify-content-between mt-1">Steven Maddison <span>{{item.createdAt | timeDuration}}</span></div>
                             <!-- <div *ngIf="request.type == 'expense'" class="minor">NGN {{request.amount.toLocaleString()}} - {{request.expenseTypeName}}</div> -->
                         </div>
                     </div>
                 </div>
 
-                <div role='button' class="item">
+                <!-- <div role='button' class="item">
                     <div class="icon text-info">
                         <app-icon [iconName]="'wallet'" [iconWidth]="28" [iconHeight]="28"></app-icon>
                     </div>
@@ -51,10 +51,9 @@
                         <div class="det w-100">
                             <div class="major">Expense request for approval.</div>
                             <div class="minor d-flex align-items-center justify-content-between mt-1">Rachael Bradson <span>Yesterday, 12:32 PM</span></div>
-                            <!-- <div *ngIf="request.type == 'expense'" class="minor">NGN {{request.amount.toLocaleString()}} - {{request.expenseTypeName}}</div> -->
                         </div>
                     </div>
-                </div>
+                </div> -->
                 
             </div>
         </mat-menu>

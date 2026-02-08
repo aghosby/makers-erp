@@ -45,6 +45,8 @@ export class DashboardComponent implements OnInit {
 
   birthdays:any[];
   workAnniversaries:any[];
+  notices:any = [];
+
 
   carouselItems = [
     {
@@ -226,6 +228,7 @@ export class DashboardComponent implements OnInit {
       this.generateUpcomingAnniversaries();
     });
 
+    this.getNotices();
     const payrollYears$ = this.hrService.getPayrollYears().subscribe({
       next: res => {
         this.payrollYears = res.data;
@@ -253,6 +256,8 @@ export class DashboardComponent implements OnInit {
       this.approvalRequests = res
       console.log('Requests', this.approvalRequests)
     })
+
+    
 
     this.dashboardSummary = [
       {
@@ -467,6 +472,14 @@ export class DashboardComponent implements OnInit {
       height: 'auto',
       data: data,
     });
+  }
+
+  getNotices() {
+    this.hrService.getNotices().subscribe(res => {
+      if(res.success) {
+        this.notices = res.data
+      }
+    })
   }
 
 }

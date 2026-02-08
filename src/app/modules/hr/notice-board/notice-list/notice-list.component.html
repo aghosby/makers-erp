@@ -136,40 +136,20 @@
                     <div class="card-title">Notice Board</div>
 
                     <div class="notices-wrap mt-3">
-                        <div class="notice">
+                        <div *ngFor="let notice of notices" class="notice">
                             <div class="date">
-                                <span>10</span> <span>Feb</span>
+                                <span>{{notice.createdAt | date: 'dd'}}</span> <span>{{notice.createdAt | date: 'MMM'}}</span>
                             </div>
                             <div class="details">
-                                <div class="title">System Maintenance Scheduled</div>
-                                <div class="photo"></div>
-                                <div class="content mt-2">We will be performing system maintenance on Saturday from 10:00 PM to 12:00 AM. During this time, some services may be unavailable.</div>
+                                <div class="title">{{notice.title}}</div>
+                                <div class="content mt-2" [innerHTML]="notice.content | truncateWords:30"></div>
                                 <div class="author mt-2">
                                     <div class="image"></div>
                                     <div class="info">
-                                        <span>Adam Pegasus</span>
-                                        <span>05:32 PM</span>
+                                        <span>{{notice.createdByName}}</span>
+                                        <span>{{notice.createdAt | date: 'hh:mm a'}}</span>
                                     </div>
-                                    <div class="preview"><i class="bi bi-arrow-up-right-square"></i></div>
-                                </div>
-                            </div>
-                        </div>
-
-                        <div class="notice">
-                            <div class="date">
-                                <span>23</span> <span>Jan</span>
-                            </div>
-                            <div class="details">
-                                <div class="title">Project Management Meeting</div>
-                                <!-- <div class="photo"></div> -->
-                                <div class="content mt-2">All project managers should note they have a meeting to discuss the feasibility of their projects with the CEO.</div>
-                                <div class="author mt-2">
-                                    <div class="image"></div>
-                                    <div class="info">
-                                        <span>Super Admin</span>
-                                        <span>10:12 AM</span>
-                                    </div>
-                                    <div (click)="viewNotice()" class="preview"><i class="bi bi-arrow-up-right-square"></i></div>
+                                    <div (click)="viewNotice(notice)" class="preview"><i class="bi bi-arrow-up-right-square"></i></div>
                                 </div>
                             </div>
                         </div>

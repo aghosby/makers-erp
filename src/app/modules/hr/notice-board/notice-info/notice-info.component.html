@@ -11,15 +11,15 @@
                     <div class="create-icon">
                         <span class="icon">
                             <div class="date">
-                                <span>10</span> <span>Feb</span>
+                                <span>{{data.createdAt | date: 'dd'}}</span> <span>{{data.createdAt | date: 'MMM'}}</span>
                             </div>
-                            <div class="time mt-2">12:34 PM</div>
+                            <div class="time mt-2">{{data.createdAt | date: 'hh:mm a'}}</div>
                             <!-- <app-icon [iconName]="'shieldDoc'" [iconWidth]="50" [iconHeight]="50"></app-icon> -->
                         </span>
                         <!-- <img src="../../../../assets/images/illustrations/puzzle.png" /> -->
                     </div>
                     <div class="create-details">
-                        <div class="create-name">System Maintenance Scheduled</div>
+                        <div class="create-name">{{data.title}}</div>
                         <!-- <div class="status approved w-auto d-inline-block sm">Resolved</div> -->
                         <!-- <p>The first step is to complete your business information.</p> -->
                     </div>
@@ -36,12 +36,14 @@
     </div>
 
     <div class="bottom-card">
-        <div class="featured-image"></div>
-        <div class="content mt-4">We will be performing system maintenance on Saturday from 10:00 PM to 12:00 AM. During this time, some services may be unavailable.</div>
+        <div class="featured-image">
+            <img [src]="data.attachments[0].url" alt="">
+        </div>
+        <div class="content mt-4" [innerHTML]="data.content"></div>
         <div class="author my-4">
             <div class="image"></div>
             <div class="info">
-                <span>Adam Pegasus</span>
+                <span>{{data.createdByName}}</span>
             </div>
         </div>
     </div>

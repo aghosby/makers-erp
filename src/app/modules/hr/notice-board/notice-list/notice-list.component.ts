@@ -311,7 +311,8 @@ export class NoticeListComponent implements OnInit {
     });
   }
 
-  viewNotice() {
+  viewNotice(data:any) {
+    this.noticeInView = data;
     this.dialog.open(NoticeInfoComponent, {
       width: '40%',
       height: 'auto',

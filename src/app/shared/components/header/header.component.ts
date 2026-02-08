@@ -56,9 +56,9 @@ export class HeaderComponent implements OnInit {
       this.profilePhoto = this.userDetails.data.profilePic;
     }
 
-    this.sharedService.pollNotifications(60000).subscribe(res => { 
-      console.log('Notifications' ,res)
+    this.sharedService.pollNotifications(600000).subscribe(res => { 
       this.notifications = res.data; 
+      console.log('Notifications', this.notifications)
     });
   }
 

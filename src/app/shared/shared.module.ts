@@ -38,6 +38,8 @@ import { InfoDialogComponent } from './components/info-dialog/info-dialog.compon
 import { LoadingDataComponent } from './components/loading-data/loading-data.component';
 import { MatPaginator, MatPaginatorModule } from '@angular/material/paginator';
 import { SupportInfoComponent } from './components/support-info/support-info.component';
+import { TruncateWordsPipe } from './pipes/truncate-words.pipe';
+import { TimeDurationPipe } from './pipes/time-duration.pipe';
 
 const SHARED_COMP = [
   MatIconModule,
@@ -71,7 +73,10 @@ const SHARED_COMP = [
     ProgressStepperComponent, 
     QuillEditorComponent, 
     InfoDialogComponent, 
-    LoadingDataComponent, SupportInfoComponent
+    LoadingDataComponent, 
+    SupportInfoComponent,
+    TruncateWordsPipe,
+    TimeDurationPipe
   ],
 
   exports: [
@@ -83,7 +88,9 @@ const SHARED_COMP = [
     ProgressStepperComponent,
     QuillEditorComponent,
     InfoDialogComponent,
-    LoadingDataComponent
+    LoadingDataComponent,
+    TruncateWordsPipe,
+    TimeDurationPipe
   ],
 
   imports: [
