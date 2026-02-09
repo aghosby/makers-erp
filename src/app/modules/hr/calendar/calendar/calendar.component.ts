@@ -1,390 +1,283 @@
-import { Component, ChangeDetectionStrategy, ViewChild, TemplateRef, OnInit } from '@angular/core';
+import {
+  Component,
+  OnInit,
+  TemplateRef,
+  ViewChild,
+} from '@angular/core';
+import {
+  CalendarEvent,
+  CalendarView,
+  CalendarEventAction,
+} from 'angular-calendar';
 import { FormBuilder, FormGroup, FormArray, FormControl } from '@angular/forms';
-import { startOfDay, endOfDay, subDays, addDays, endOfMonth, isSameDay, isSameMonth, addHours } from 'date-fns';
 import { Subject } from 'rxjs';
+import {
+  startOfDay,
+  endOfDay,
+} from 'date-fns';
 import { MatDialog } from '@angular/material/dialog';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
-import { CalendarEvent, CalendarEventAction, CalendarEventTimesChangedEvent, CalendarView } from 'angular-calendar';
-import { EventColor } from 'calendar-utils';
-import { NotificationService } from 'src/app/shared/services/utils/notification.service';
-import { HumanResourcesService } from 'src/app/shared/services/hr/human-resources.service';
 import { AuthenticationService } from 'src/app/shared/services/utils/authentication.service';
-import { DatePipe } from '@angular/common';
+import { HumanResourcesService } from 'src/app/shared/services/hr/human-resources.service';
+import { NotificationService } from 'src/app/shared/services/utils/notification.service';
 import { MeetingInfoComponent } from '../meeting-info/meeting-info.component';
 import { PublicHolidayInfoComponent } from 'src/app/modules/settings/human-resources/absence/public-holiday-info/public-holiday-info.component';
 
-const colors: Record<string, EventColor> = {
-  red: {
-    primary: '#ad2121',
-    secondary: '#FAE3E3',
-  },
-  blue: {
-    primary: '#1e90ff',
-    secondary: '#D1E8FF',
-  },
-  yellow: {
-    primary: '#e3bc08',
-    secondary: '#FDF1BA',
-  },
+interface CalendarMappedEvent extends CalendarEvent {
+  raw: any;
+  type: 'meeting' | 'holiday' | 'leave' | 'birthday';
+}
+
+const colors = {
+  meeting: { primary: '#1e90ff', secondary: '#D1E8FF' },
+  holiday: { primary: '#ad2121', secondary: '#FAE3E3' },
+  leave: { primary: '#e3bc08', secondary: '#FDF1BA' },
+  birthday: { primary: '#8e44ad', secondary: '#f5e6ff' },
 };
 
 @Component({
   selector: 'app-calendar',
   templateUrl: './calendar.component.html',
-  styleUrls: ['./calendar.component.scss']
+  styleUrls: ['./calendar.component.scss'],
 })
 export class CalendarComponent implements OnInit {
-
-  userDetails: any;
-  employeeList: any[] = [];
-  calendarDetails: any;
-  sortedEvents: any[] = [];
-  upcomingEvents: any[] = [];
-  @ViewChild('modalContent', { static: true }) modalContent: TemplateRef<any>;
+  @ViewChild('eventTemplate', { static: true }) eventTemplate: TemplateRef<any>;
+  @ViewChild('monthCellTemplate', { static: true }) monthCellTemplate: TemplateRef<any>;
+  @ViewChild('weekEventTemplate', { static: true }) weekEventTemplate: TemplateRef<any>;
+  @ViewChild('dayEventTemplate', { static: true }) dayEventTemplate: TemplateRef<any>;
 
   view: CalendarView = CalendarView.Month;
-
   CalendarView = CalendarView;
+  viewDate = new Date();
 
-  viewDate: Date = new Date();
-
-  modalData: {
-    action: string;
-    event: CalendarEvent;
-  };
-
-  holidayActions: CalendarEventAction[] = [
-    {
-      label: '<i class="bi bi-pen-fill ms-2"></i>',
-      a11yLabel: 'Edit',
-      onClick: ({ event }: { event: CalendarEvent }): void => {
-        console.log(event);
-        if(this.userDetails.isSuperAdmin) this.viewHolidayInfo(event);
-      },
-    }
-  ]
-
-  actions: CalendarEventAction[] = [
-    {
-      label: '<i class="bi bi-pen-fill ms-2"></i>',
-      a11yLabel: 'Edit',
-      onClick: ({ event }: { event: CalendarEvent }): void => {
-        this.viewMeetingInfo(event);
-      },
-    },
-    {
-      label: '<i class="bi bi-trash3-fill ms-2 text-danger"></i>',
-      a11yLabel: 'Delete',
-      onClick: ({ event }: { event: CalendarEvent }): void => {
-        this.deleteMeeting(event);
-      },
-    },
-  ];
+  events: CalendarMappedEvent[] = [];
+  allEvents: CalendarMappedEvent[] = [];
 
   refresh = new Subject<void>();
+  activeDayIsOpen = false;
 
-  events: CalendarEvent[] = [];
-  activeDayIsOpen: boolean = false;
+  filterForm: FormGroup;
+
+  employeeList: any[] = []; 
+  calendarDetails: any; 
+
+  eventFilters = [
+    { id: 'meeting', name: 'Meetings', icon: 'alarm' },
+    { id: 'holiday', name: 'Holidays', icon: 'building' },
+    { id: 'leave', name: 'Leave Days', icon: 'userMinus' },
+    { id: 'birthday', name: 'Birthdays', icon: 'wand' },
+  ];
 
   constructor(
     private fb: FormBuilder,
+    private dialog: MatDialog,
     private modal: NgbModal,
-    public dialog: MatDialog,
-    private datePipe: DatePipe,
-    private authService: AuthenticationService,
-    private hrService: HumanResourcesService,     
-    private notifyService: NotificationService,
-  ) {
-    const formControls = this.eventFilters.map(control => new FormControl(false));
-    const selectAllControl = new FormControl(false);
-    this.filterForm = this.fb.group({
-      eventFilters: new FormArray(formControls),
-      selectAll: selectAllControl
-    });
-  }
+    private auth: AuthenticationService,
+    private hr: HumanResourcesService,
+    private notify: NotificationService
+  ) {}
 
   ngOnInit(): void {
-    this.userDetails = this.authService.loggedInUser.data;
-    const formControls = this.eventFilters.map(control => new FormControl(false));
-    const selectAllControl = new FormControl(false);
-    this.filterForm = this.fb.group({
-      eventFilters: new FormArray(formControls),
-      selectAll: selectAllControl
-    });
-    this.getPageData();
-
+    this.buildFilterForm();
+    this.loadCalendarData();
     this.filterChange();
   }
 
-  getPageData = async () => {
-    this.employeeList = await this.hrService.getEmployees().toPromise();
-    this.calendarDetails = await this.hrService.getCalendar().toPromise(); 
-    this.calendarDetails = this.calendarDetails['data'];   
-    console.log(this.calendarDetails);
-    if(this.calendarDetails) {
-      this.sortCalendarEvents();
-      this.generateEvents();
-    }
-  }
-
-  // Event Filter Functions
-  filterForm: FormGroup;
-  eventFilters = [
-    { id: 1, name: 'Meetings', icon:'alarm', class: 'meetings' },
-    { id: 2, name: 'Holidays', icon:'building', class: 'holidays' },
-    { id: 3, name: 'Leave Days', icon:'userMinus', class: 'leave' },
-    // { id: 4, genre: 'Hiphop' }
-  ];
-
-  filterChange(): void {
-    // Subscribe to changes on the selectAll checkbox
-    this.filterForm.get('selectAll').valueChanges.subscribe(bool => {
-      this.filterForm.get('eventFilters').patchValue(Array(this.eventFilters.length).fill(bool), { emitEvent: false });
+  buildFilterForm() {
+    this.filterForm = this.fb.group({
+      selectAll: new FormControl(true),
+      eventFilters: new FormArray(
+        this.eventFilters.map(() => new FormControl(true))
+      ),
     });
 
-    // Subscribe to changes on the filter preference checkboxes
-    this.filterForm.get('eventFilters').valueChanges.subscribe(val => {
-      const allSelected = val.every(bool => bool);
-      if (this.filterForm.get('selectAll').value !== allSelected) {
-        this.filterForm.get('selectAll').patchValue(allSelected, { emitEvent: false });
-      }
-    });
-
-    console.log(this.filterForm.value);
+    this.filterForm.valueChanges.subscribe(() => this.applyFilters());
   }
 
-  filterEvents() {
-    // Filter out the unselected ids
-    const selectedPreferences = this.filterForm.value.eventFilters.map((checked, index) => checked ? this.eventFilters[index].id : null).filter(value => value !== null);
-    //console.log(selectedPreferences);
-    // Do something with the result
-  }
+  async loadCalendarData() {
+    const [employeesRes, calendarRes] = await Promise.all([ this.hr.getEmployees().toPromise(), this.hr.getCalendar().toPromise(), ]); 
+    this.employeeList = employeesRes.data; 
+    this.calendarDetails = calendarRes.data;
 
-  dayClicked({ date, events }: { date: Date; events: CalendarEvent[] }): void {
-    if (isSameMonth(date, this.viewDate)) {
-      if (
-        (isSameDay(this.viewDate, date) && this.activeDayIsOpen === true) ||
-        events.length === 0
-      ) {
-        this.activeDayIsOpen = false;
-      } else {
-        this.activeDayIsOpen = true;
-      }
-      this.viewDate = date;
-    }
-  }
-
-  eventTimesChanged({event, newStart, newEnd }: CalendarEventTimesChangedEvent): void {
-    this.events = this.events.map((iEvent) => {
-      if (iEvent === event) {
-        return {
-          ...event,
-          start: newStart,
-          end: newEnd,
-        };
-      }
-      return iEvent;
-    });
-    this.handleEvent('Dropped or resized', event);
-  }
-
-  handleEvent(action: string, event: CalendarEvent): void {
-    if(event.allDay) this.viewHolidayInfo(event);
-    else this.viewMeetingInfo(event);
-  }
-
-  addEvent(): void {
-    this.events = [
-      ...this.events,
-      {
-        title: 'New event',
-        start: startOfDay(new Date()),
-        end: endOfDay(new Date()),
-        color: colors.red,
-        draggable: true,
-        resizable: {
-          beforeStart: true,
-          afterEnd: true,
-        },
-      },
+    this.allEvents = [
+      ...this.mapMeetings(this.calendarDetails.meetings),
+      ...this.mapHolidays(this.calendarDetails.holidays),
+      ...this.mapLeave(this.calendarDetails.leaveRecords),
+      ...this.mapBirthdays(this.calendarDetails.birthdays),
     ];
+
+    this.applyFilters();
   }
 
-  deleteEvent(eventToDelete: CalendarEvent) {
-    this.events = this.events.filter((event) => event !== eventToDelete);
+  // -----------------------------
+  // EVENT MAPPERS
+  // -----------------------------
+
+  mapMeetings(list: any[]): CalendarMappedEvent[] {
+    return list.map((m) => ({
+      title: m.title || 'Meeting',
+      start: new Date(m.meetingStartTime),
+      end: new Date(m.meetingEndTime),
+      color: colors.meeting,
+      type: 'meeting',
+      raw: m,
+    }));
   }
 
-  setView(view: CalendarView) {
-    this.view = view;
+  mapHolidays(list: any[]): CalendarMappedEvent[] {
+    return list.map((h) => ({
+      title: h.holidayName,
+      start: startOfDay(new Date(h.date)),
+      end: endOfDay(new Date(h.date)),
+      color: colors.holiday,
+      allDay: true,
+      type: 'holiday',
+      raw: h,
+    }));
   }
 
-  closeOpenMonthViewDay() {
-    this.activeDayIsOpen = false;
+  mapLeave(list: any[]): CalendarMappedEvent[] {
+    return list.map((l) => ({
+      title: `${l.fullName} - ${l.leaveTypeName}`,
+      start: this.parseDMY(l.leaveStartDate),
+      end: this.parseDMY(l.leaveEndDate),
+      color: colors.leave,
+      type: 'leave',
+      raw: l,
+    }));
   }
+
+  mapBirthdays(list: any[]): CalendarMappedEvent[] {
+    return list.map((b) => {
+      const [day, month] = b.employeeBirthday.split('-');
+      const date = new Date(new Date().getFullYear(), +month - 1, +day);
+
+      return {
+        title: `${b.employeeName}'s Birthday`,
+        start: startOfDay(date),
+        end: endOfDay(date),
+        color: colors.birthday,
+        allDay: true,
+        type: 'birthday',
+        raw: b,
+      };
+    });
+  }
+
+  parseDMY(str: string): Date {
+    const [d, m, y] = str.split('-').map(Number);
+    return new Date(y, m - 1, d);
+  }
+
+  // -----------------------------
+  // FILTERING
+  // -----------------------------
+
+  applyFilters() {
+    const selected = this.filterForm.value.eventFilters
+      .map((checked, i) => (checked ? this.eventFilters[i].id : null))
+      .filter(Boolean);
+
+    this.events = this.allEvents.filter((e) => selected.includes(e.type));
+
+    this.refresh.next();
+  }
+
+  // -----------------------------
+  // EVENT CLICK HANDLING
+  // -----------------------------
+
+  handleEvent(event: CalendarMappedEvent) {
+    switch (event.type) {
+      case 'meeting':
+        this.dialog.open(MeetingInfoComponent, {
+          width: '40%',
+          data: { modalInfo: event.raw, isExisting: true },
+        });
+        break;
+
+      case 'holiday':
+        this.dialog.open(PublicHolidayInfoComponent, {
+          width: '30%',
+          data: { modalInfo: event.raw, isExisting: true },
+        });
+        break;
+
+      case 'leave':
+        this.notify.showInfo('Leave details coming soon');
+        break;
+
+      case 'birthday':
+        this.notify.showInfo('Birthday details coming soon');
+        break;
+    }
+  }
+
 
   createNewMeeting() {
-    if(this.employeeList) {
-      const dialogRef = this.dialog.open(MeetingInfoComponent, {
-        width: '40%',
-        height: 'auto',
-        data: {
-          isExisting: false,
-          employeeList: this.employeeList['data']
-        },
-      });
-      dialogRef.afterClosed().subscribe(() => {
-        this.hrService.getCalendar().subscribe(res => {
-          this.calendarDetails = res.data;
-          this.generateEvents();
-          // console.log(this.calendarDetails);
-        });
-      });
+    if (!this.employeeList || !this.employeeList.length) {
+      this.notify.showError(
+        'All data needed to create a meeting is not available yet. Please try again.'
+      );
+      return;
     }
-    else {
-      this.notifyService.showError('All data needed to create a meeting is not available yet. please try again');
-    }
-    
+
+    const dialogRef = this.dialog.open(MeetingInfoComponent, {
+      width: '40%',
+      height: 'auto',
+      data: {
+        isExisting: false,
+        employeeList: this.employeeList,
+      },
+    });
+
+    dialogRef.afterClosed().subscribe(() => {
+      this.loadCalendarData();
+    });
   }
 
-  generateEvents() {
-    this.generateHolidayEvents();
-    this.generateMeetingEvents();
-    console.log(this.events);
-  }
-
-  sortCalendarEvents() {
-    this.calendarDetails['holidays'].map(event => {
-      event['dateRef'] = event.date;
-      event['type'] = 'holiday';
-      this.sortedEvents.push(event);
-    })
-
-    this.calendarDetails['meetings'].map(event => {
-      event['dateRef'] = event.meetingStartTime;
-      event['type'] = 'meeting';
-      this.sortedEvents.push(event);
-    })
-
-    this.sortedEvents.sort((a, b): any => {
-      //console.log(a.dateRef, b.dateRef)
-      if(a.dateRef && b.dateRef) {
-        return a.dateRef.localeCompare(b.dateRef);
+  dayClicked({ date, events }: { date: Date; events: CalendarEvent[] }): void { 
+    if (date.getMonth() === this.viewDate.getMonth()) { 
+      if ( (date.getDate() === this.viewDate.getDate() && this.activeDayIsOpen) || events.length === 0 ) { 
+        this.activeDayIsOpen = false; 
       } 
-      return false
-    });
+      else { 
+        this.activeDayIsOpen = true; 
+      } 
+      this.viewDate = date; 
+    } 
+  } 
 
-    console.log('Sorted Events', this.sortedEvents)
-    
-    const today = new Date().getTime();
-    this.upcomingEvents = this.sortedEvents.filter((items)  => {
-      return new Date(items.dateRef).getTime() > today;
-    })
-    console.log(this.upcomingEvents);
+  closeOpenMonthViewDay() { 
+    this.activeDayIsOpen = false; 
   }
 
-  generateHolidayEvents() {
-    this.calendarDetails['holidays'].map((event: any) => {
-      let eventData = {
-        title: event.holidayName,
-        start: startOfDay(this.strToDate(event.date)),
-        end: endOfDay(this.strToDate(event.date)),
-        color: colors.red,
-        actions: this.userDetails.isSuperAdmin ? this.holidayActions : null,
-        allDay: true,
-        draggable: false,
-        resizable: {
-          beforeStart: false,
-          afterEnd: false,
-        },
-      }
-      this.events.push(eventData);
-    })
+  eventTimesChanged({ event, newStart, newEnd }: any): void { 
+    this.allEvents = this.allEvents.map((e) => e === event ? { ...e, start: newStart, end: newEnd, } : e ); 
+    this.applyFilters(); 
   }
 
-  generateMeetingEvents() {
-    this.calendarDetails['meetings'].map((event: any) => {
-      let eventData = {
-        title: event.meetingTitle,
-        start: this.strToDate(event.meetingStartTime),
-        end: this.strToDate(event.meetingEndTime),
-        color: colors.blue,
-        actions: this.actions,
-        allDay: false,
-        draggable: false,
-        resizable: {
-          beforeStart: false,
-          afterEnd: false,
-        },
-      }
-      this.events.push(eventData);
-    })
+  setView(view: CalendarView) { 
+    this.view = view; 
   }
 
-  strToDate(dateString) {
-    const dateObject = new Date(Date.parse(dateString));
-    return dateObject
+  filterEvents() { 
+    this.applyFilters(); 
   }
 
-  viewHolidayInfo(details: any) {
-    // console.log(details)
-    let modalInfo: any;
-    this.calendarDetails['holidays'].find((x: any) => {
-      if(x.holidayName == details.title) modalInfo = x;
-    })
-    this.dialog.open(PublicHolidayInfoComponent, {
-      width: '30%',
-      height: 'auto',
-      data: {
-        name: modalInfo.holidayName,
-        id: modalInfo._id,
-        isExisting: true,
-        modalInfo: modalInfo
-      },
-    })
-  }
-
-  viewMeetingInfo(details: any) {
-    // console.log(details)
-    let modalInfo: any = {};
-    this.calendarDetails['meetings'].find((x: any) => {
-      if(x.meetingTitle == details.title) modalInfo = x;
-    })
-    this.dialog.open(MeetingInfoComponent, {
-      width: '35%',
-      height: 'auto',
-      data: {
-        name: modalInfo.meetingTitle,
-        id: modalInfo._id,
-        isExisting: true,
-        employeeList: this.employeeList['data'],
-        modalInfo: modalInfo
-      },
-    })
-  }
-
-  //Delete a Meeting
-  deleteMeeting(info: any) {
-    this.notifyService.confirmAction({
-      title: 'Delete ' + info.title,
-      message: 'Are you sure you want to delete this meeting?',
-      confirmText: 'Yes, Delete',
-      cancelText: 'Cancel',
-    }).subscribe((confirmed) => {
-      if (confirmed) {
-        // this.hrService.deletePayrollPeriod(info._id).subscribe({
-        //   next: res => {
-        //     // console.log(res);
-        //     if(res.status == 200) {
-        //       this.notifyService.showInfo('The period has been deleted successfully');
-        //     }
-        //     this.getPageData();
-        //   },
-        //   error: err => {
-        //     console.log(err)
-        //     this.notifyService.showError(err.error.error);
-        //   } 
-        // })
-      }
-    });
+  filterChange(): void { 
+    // When "Select All" changes → update all filters 
+    this.filterForm.get('selectAll').valueChanges.subscribe((checked: boolean) => { 
+      this.filterForm.get('eventFilters').patchValue( Array(this.eventFilters.length).fill(checked), { emitEvent: false } ); 
+      this.applyFilters(); 
+    }); 
+    // When any individual filter changes → update "Select All" 
+    this.filterForm.get('eventFilters').valueChanges.subscribe((values: boolean[]) => { 
+      const allSelected = values.every(v => v === true); 
+      if (this.filterForm.get('selectAll').value !== allSelected) { 
+        this.filterForm.get('selectAll').patchValue(allSelected, { emitEvent: false }); 
+      } 
+      this.applyFilters(); 
+    }); 
   }
 }

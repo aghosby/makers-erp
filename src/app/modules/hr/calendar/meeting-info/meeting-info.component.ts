@@ -42,7 +42,7 @@ export class MeetingInfoComponent implements OnInit {
         controlLabel: 'Invited Guests',
         controlWidth: '100%',
         initialValue: '',
-        selectOptions: this.arrayToObject(this.employees, 'email'),
+        selectOptions: null,
         validators: [Validators.required],
         order: 2
       },

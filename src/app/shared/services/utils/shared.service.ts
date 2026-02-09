@@ -67,5 +67,9 @@ export class SharedService {
     ); 
   }
 
+  public readNotification(notificationId:string): Observable<any> {
+    return this.http.get<any>(`${this.path}/markAsRead/${notificationId}`, this.requestOptions);
+  }
+
   
 }

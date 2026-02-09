@@ -36,7 +36,7 @@
     </div>
 
     <div class="bottom-card">
-        <div class="featured-image">
+        <div *ngIf="data.attachments.length > 0" class="featured-image">
             <img [src]="data.attachments[0].url" alt="">
         </div>
         <div class="content mt-4" [innerHTML]="data.content"></div>

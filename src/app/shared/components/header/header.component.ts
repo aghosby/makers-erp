@@ -22,6 +22,7 @@ export class HeaderComponent implements OnInit {
   profilePhoto: string;
 
   notifications:any[] = [];
+  notificationBadgeCount:number = 0;
 
   constructor(
     private router: Router,
@@ -57,9 +58,34 @@ export class HeaderComponent implements OnInit {
     }
 
     this.sharedService.pollNotifications(600000).subscribe(res => { 
-      this.notifications = res.data; 
-      console.log('Notifications', this.notifications)
+      const raw = res.data; // this is already an array
+
+      // 1. Sort unread first
+      const sorted = raw.sort((a, b) => Number(a.read) - Number(b.read));
+
+      // 2. Count unread
+      this.notificationBadgeCount = sorted.filter(n => !n.read).length;
+
+      // 3. Build the display list (max 5)
+      const unread = sorted.filter(n => !n.read);
+      const read = sorted.filter(n => n.read);
+
+      if (unread.length >= 5) {
+        // show only unread (max 5)
+        this.notifications = unread.slice(0, 5);
+      } 
+      else {
+        // show all unread + fill with read
+        const remaining = 5 - unread.length;
+        this.notifications = [
+          ...unread,
+          ...read.slice(0, remaining)
+        ];
+      }
+
+      console.log('Notifications (processed)', this.notifications);
     });
+
   }
 
   public transformSvg(html: string) {
@@ -77,4 +103,17 @@ export class HeaderComponent implements OnInit {
       },
     });
   }
+
+  markAllAsRead() {
+    // const unreadIds = this.notifications.filter(n => !n.read).map(n => n._id);
+    // if (unreadIds.length === 0) return;
+
+    // this.notifications = this.notifications.map(n => {
+    //   this.sharedService.readNotification(n._id).subscribe((res) => {
+    //     if(res.success) this.notificationBadgeCount = this.notificationBadgeCount - 1;
+    //     else return
+    //   });
+    // });    
+  }
+
 }

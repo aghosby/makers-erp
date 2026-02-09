@@ -90,7 +90,7 @@
                             [refresh]="refresh"
                             [activeDayIsOpen]="activeDayIsOpen"
                             (dayClicked)="dayClicked($event.day)"
-                            (eventClicked)="handleEvent('Clicked', $event.event)"
+                            (eventClicked)="handleEvent($event.event)"
                             (eventTimesChanged)="eventTimesChanged($event)"
                         >
                         </mwl-calendar-month-view>
@@ -99,7 +99,7 @@
                             [viewDate]="viewDate"
                             [events]="events"
                             [refresh]="refresh"
-                            (eventClicked)="handleEvent('Clicked', $event.event)"
+                            (eventClicked)="handleEvent($event.event)"
                             (eventTimesChanged)="eventTimesChanged($event)"
                         >
                         </mwl-calendar-week-view>
@@ -108,7 +108,7 @@
                             [viewDate]="viewDate"
                             [events]="events"
                             [refresh]="refresh"
-                            (eventClicked)="handleEvent('Clicked', $event.event)"
+                            (eventClicked)="handleEvent($event.event)"
                             (eventTimesChanged)="eventTimesChanged($event)"
                         >
                         </mwl-calendar-day-view>
@@ -139,7 +139,6 @@
                                 class="form-check"
                                 formArrayName="eventFilters"
                                 *ngFor="let item of filterForm.controls['eventFilters']['controls']; let i = index"
-                                [ngClass]="eventFilters[i].class"
                             >
                                 <label class="form-check-label">
                                     <input (change)="filterEvents()" class="form-check-input" type="checkbox" [formControlName]="i">
@@ -175,7 +174,7 @@
 </div>
 
 
-<ng-template #modalContent let-close="close">
+<!-- <ng-template #modalContent let-close="close">
     <div class="modal-header">
       <h5 class="modal-title">Event action occurred</h5>
       <button type="button" class="close" (click)="close()">
@@ -197,4 +196,36 @@
         OK
       </button>
     </div>
+</ng-template> -->
+
+<!-- EVENT TEMPLATE --> 
+<ng-template #eventTemplate let-event="event"> 
+    <div class="custom-event"> 
+        <strong>{{ event.title }}</strong> 
+        <div class="small">{{ event.start | date:'shortTime' }}</div> 
+    </div> 
+</ng-template> 
+
+<!-- MONTH CELL TEMPLATE --> 
+<ng-template #monthCellTemplate let-day="day"> 
+    <div class="custom-month-cell"> 
+        <div class="date">{{ day.date | date:'d' }}</div> 
+        <div class="events"> 
+            <div *ngFor="let e of day.events" class="event-dot" [style.background]="e.color?.primary">Y</div> 
+        </div> 
+    </div> 
+</ng-template> 
+
+<!-- WEEK EVENT TEMPLATE --> 
+<ng-template #weekEventTemplate let-event="event"> 
+    <div class="week-event"> 
+        <span>{{ event.title }}</span> 
+    </div> 
+</ng-template> 
+
+<!-- DAY EVENT TEMPLATE --> 
+<ng-template #dayEventTemplate let-event="event"> 
+    <div class="day-event"> 
+        <span>{{ event.title }}</span> 
+    </div> 
 </ng-template>

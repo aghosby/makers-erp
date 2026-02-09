@@ -196,9 +196,7 @@ export class LoginComponent implements OnInit {
             }
           },
           error: err => {
-            console.log(err)
             this.apiLoading = false;
-            this.notify.showError(err.error.error);
           }          
         })
       }
@@ -216,7 +214,6 @@ export class LoginComponent implements OnInit {
           error: err => {
             console.log(err)
             this.apiLoading = false;
-            this.notify.showError(err.error.error);
           }
         })      
       }
@@ -241,7 +238,6 @@ export class LoginComponent implements OnInit {
         },
         error: err => {
           console.log(err)
-          this.notify.showError(err.error.error);
         }          
       })
     }
@@ -271,7 +267,6 @@ export class LoginComponent implements OnInit {
               },
               error: err => {
                 console.log(err)
-                this.notify.showError(err.error.error);
               }          
             })
           }

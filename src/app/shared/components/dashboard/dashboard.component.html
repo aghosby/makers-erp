@@ -82,7 +82,7 @@
                             <span class="value">{{employeeList?.length}}</span> 
                             <div class="stacked-items w-auto">
                                 <div *ngIf="employeeList.length > 0" class="stack">
-                                    <span *ngFor="let staff of employeeList.slice(5)" style="background-image: url('{{staff.profilePic}}');"></span>
+                                    <span *ngFor="let staff of employeeList | slice: 0 : 5" style="background-image: url('{{staff.profilePic}}');"></span>
                                     <span *ngIf="teamMembers.length > 4">+{{employeeList.length - 4}}</span>
                                 </div>
                             </div>                           
