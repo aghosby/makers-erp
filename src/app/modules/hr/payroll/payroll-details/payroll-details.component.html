@@ -71,13 +71,13 @@
                         </span>
                         Send for Approval
                     </div>
-                    <div *ngIf="payrollCurrentStep == 2" class="cta approved-bkg icon sm ms-lg-3">
+                    <div *ngIf="payrollCurrentStep == 2" (click)="approvePayroll()" class="cta approved-bkg icon sm ms-lg-3">
                         <span class="icon pe-1">
                             <app-icon [iconName]="'userCheck'" [iconWidth]="20" [iconHeight]="20"></app-icon>
                         </span>
                         Approve
                     </div>
-                    <div *ngIf="payrollCurrentStep == 3" class="cta primary-bkg icon sm ms-lg-3">
+                    <div *ngIf="payrollCurrentStep == 3" (click)="disbursePayroll()" class="cta primary-bkg icon sm ms-lg-3">
                         <span class="icon pe-1">
                             <app-icon [iconName]="'wallet'" [iconWidth]="20" [iconHeight]="20"></app-icon>
                         </span>

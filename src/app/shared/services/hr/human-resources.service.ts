@@ -384,6 +384,16 @@ export class HumanResourcesService {
     return this.http.get<any>(`${this.path}/payrollYears`, this.requestOptions);
   }
 
+  //Approve Payroll
+  public approvePayroll(payrollPeriodId:string): Observable<any> {
+    return this.http.patch<any>(`${this.path}/approvePayroll/${payrollPeriodId}`, this.requestOptions);
+  }
+
+  //Disburse Payroll
+  public disbursePayroll(payrollPeriodId:string): Observable<any> {
+    return this.http.patch<any>(`${this.path}/disbursePayroll/${payrollPeriodId}`, this.requestOptions);
+  }
+
   /*************** SALARY SCALE RELATED ACTIONS ***************/
 
   //Create a new salary scale

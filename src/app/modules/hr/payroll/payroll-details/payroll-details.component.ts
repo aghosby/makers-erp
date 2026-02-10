@@ -108,6 +108,8 @@ export class PayrollDetailsComponent implements OnInit {
     if(this.currentPeriodId) {
       this.periodInView = await this.hrService.getPayrollDetails(this.currentPeriodId).toPromise();
       this.periodInView = this.periodInView['data'][0];
+      if(this.periodInView.periodStatusApproved) this.payrollCurrentStep = 3
+      if(this.periodInView.periodPayrollDisbursed) this.payrollCurrentStep = 4
       console.log(this.periodInView);
     }    
     this.employees = await this.hrService.getEmployees().toPromise();
@@ -391,6 +393,36 @@ export class PayrollDetailsComponent implements OnInit {
   switchStep(evt:any) {
     console.log(evt);
     this.payrollCurrentStep = evt
+  }
+
+  approvePayroll() {
+    this.apiLoading = true;
+    this.hrService.approvePayroll(this.periodInView._id).subscribe({
+      next: (res) => {
+        if(res.success) {
+          this.apiLoading = false;
+          this.notifyService.showSuccess('Payroll period has been approved successfully')
+        }
+      },
+      error: (err) => {
+        this.apiLoading = false;
+      }
+    })
+  }
+
+  disbursePayroll() {
+    this.apiLoading = true;
+    this.hrService.disbursePayroll(this.periodInView._id).subscribe({
+      next: (res) => {
+        if(res.success) {
+          this.apiLoading = false;
+          this.notifyService.showSuccess('Payroll period has been disbursed successfully')
+        }
+      },
+      error: (err) => {
+        this.apiLoading = false;
+      }
+    })
   }
 
 }

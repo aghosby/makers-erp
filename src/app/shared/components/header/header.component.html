@@ -31,16 +31,16 @@
         <mat-menu #notificationsMenu="matMenu" xPosition="before" (closed)="markAllAsRead()" class="xl">
             <div class="listed-items my-3 px-3">
                 <div role='button' *ngFor="let item of notifications" class="item align-items-start">
-                    <div *ngIf="item.notificationType === 'Leave Request'" class="icon" [class.text-danger]="item.notificationType === 'Leave Request'">
+                    <div *ngIf="item?.notificationType === 'Leave Request'" class="icon" [class.text-danger]="item?.notificationType === 'Leave Request'">
                         <app-icon [iconName]="'calendarTime'" [iconWidth]="28" [iconHeight]="28"></app-icon>
                     </div>
-                    <div *ngIf="item.notificationType === 'Meeting Invitation'" class="icon" [class.text-primary]="item.notificationType === 'Meeting Invitation'">
+                    <div *ngIf="item?.notificationType === 'Meeting Invitation'" class="icon" [class.text-primary]="item?.notificationType === 'Meeting Invitation'">
                         <app-icon [iconName]="'calendar'" [iconWidth]="28" [iconHeight]="28"></app-icon>
                     </div>
-                    <div *ngIf="item.notificationType === 'Expense Request'" class="icon" [class.text-info]="item.notificationType === 'Expense Request'">
+                    <div *ngIf="item?.notificationType === 'Expense Request'" class="icon" [class.text-info]="item?.notificationType === 'Expense Request'">
                         <app-icon [iconName]="'wallet'" [iconWidth]="28" [iconHeight]="28"></app-icon>
                     </div>
-                    <div *ngIf="item.notificationType === 'Appraisal Reviewed'" class="icon" [class.text-success]="item.notificationType === 'Appraisal Reviewed'">
+                    <div *ngIf="item?.notificationType === 'Appraisal Reviewed'" class="icon" [class.text-success]="item?.notificationType === 'Appraisal Reviewed'">
                         <app-icon [iconName]="'medalStar'" [iconWidth]="28" [iconHeight]="28"></app-icon>
                     </div>
                     <div class="content">
