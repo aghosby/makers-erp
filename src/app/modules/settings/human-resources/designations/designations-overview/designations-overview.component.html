@@ -38,7 +38,7 @@
                                 <ng-container *ngIf="column.key == 'expenseCardLimit'">
                                     <th [style.width]="column.columnWidth" mat-header-cell *matHeaderCellDef>{{ column.label }}</th>
                                     <td style="white-space: nowrap;" mat-cell *matCellDef="let row">
-                                        <div class="">{{ row.expenseCard[0].cardCurrency }} {{ row.expenseCard[0].cardLimit.toLocaleString() }}</div>
+                                        <div class="">{{ row.expenseCard[0].cardCurrency }} {{ row.expenseCard[0].cardLimit | localeString}}</div>
                                     </td>
                                 </ng-container>
 

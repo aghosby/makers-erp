@@ -222,13 +222,14 @@ export class DashboardComponent implements OnInit {
         this.employeeList.map(x => {
           if(x.department == this.userDetails.department) this.teamMembers.push(x);
         })
-        console.log('Team', this.teamMembers)
+        //console.log('Team', this.teamMembers)
       }
       this.generateUpcomingBithdays();
       this.generateUpcomingAnniversaries();
     });
 
     this.getNotices();
+
     const payrollYears$ = this.hrService.getPayrollYears().subscribe({
       next: res => {
         this.payrollYears = res.data;
@@ -238,12 +239,12 @@ export class DashboardComponent implements OnInit {
     })    
     // console.log(this.payrollYears);
     const payrollGraphData$ = this.hrService.getPayrollGraph(this.currentPayrollYear).subscribe(res => this.payrollGraphData = res.data)
-    console.log(this.payrollGraphData);
+    //console.log(this.payrollGraphData);
     this.getPayrollPeriods();
     // console.log(this.employeeList)
 
     const leaveRequests$ = this.hrService.getRequestedLeaveApprovals();
-    const expenseRequests$ = this.hrService.getRequestedExpenseApprovals();
+    const expenseRequests$ = this.userDetails.isManager ? this.hrService.getRequestedExpenseApprovals() : of({data:[]});
     forkJoin([leaveRequests$, expenseRequests$]).pipe(
       map((res) => {
         const reqs = res[0]['data'].map(x => {return {...x, type:'leave'}}).concat(res[1]['data'].map(x => {return {...x, type:'expense'}}));
@@ -254,7 +255,7 @@ export class DashboardComponent implements OnInit {
       })
     ).subscribe(res => {
       this.approvalRequests = res
-      console.log('Requests', this.approvalRequests)
+      //console.log('Requests', this.approvalRequests)
     })
 
     

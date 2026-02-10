@@ -6,6 +6,7 @@ import { MatDialog } from '@angular/material/dialog';
 import { HumanResourcesService } from 'src/app/shared/services/hr/human-resources.service';
 import { AuthenticationService } from 'src/app/shared/services/utils/authentication.service';
 import { EditEmployeeComponent } from '../../employees/edit-employee/edit-employee.component';
+import { EmployeeDocumentsComponent } from '../../employees/employee-info/employee-documents/employee-documents.component';
 
 
 @Component({
@@ -194,6 +195,17 @@ export class SelfServiceOverviewComponent implements OnInit {
       this.managerImage = res.data.profilePic;
       this.managerRole = res.data.companyRole;
     })
+  }
+
+  //Upload a new document
+  uploadDocument() {
+    this.dialog.open(EmployeeDocumentsComponent, {
+      width: '40%',
+      height: 'auto',
+      data: {
+        isExisting: false
+      },
+    });
   }
 
 }

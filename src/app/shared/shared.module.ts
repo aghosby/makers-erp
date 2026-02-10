@@ -40,6 +40,7 @@ import { MatPaginator, MatPaginatorModule } from '@angular/material/paginator';
 import { SupportInfoComponent } from './components/support-info/support-info.component';
 import { TruncateWordsPipe } from './pipes/truncate-words.pipe';
 import { TimeDurationPipe } from './pipes/time-duration.pipe';
+import { LocaleStringPipe } from './pipes/locale-string.pipe';
 
 const SHARED_COMP = [
   MatIconModule,
@@ -76,7 +77,8 @@ const SHARED_COMP = [
     LoadingDataComponent, 
     SupportInfoComponent,
     TruncateWordsPipe,
-    TimeDurationPipe
+    TimeDurationPipe,
+    LocaleStringPipe
   ],
 
   exports: [
@@ -90,7 +92,8 @@ const SHARED_COMP = [
     InfoDialogComponent,
     LoadingDataComponent,
     TruncateWordsPipe,
-    TimeDurationPipe
+    TimeDurationPipe,
+    LocaleStringPipe
   ],
 
   imports: [

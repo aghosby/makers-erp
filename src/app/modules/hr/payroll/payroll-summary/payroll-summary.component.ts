@@ -39,7 +39,7 @@ export class PayrollSummaryComponent implements OnInit {
     },
     {
       key: "payrollPeriodName",
-      label: "Payroll Name",
+      label: "Payroll Period",
       order: 2,
       columnWidth: "12%",
       cellStyle: "width: 100%",

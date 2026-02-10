@@ -637,8 +637,8 @@
                             <div class="content">
                                 <div class="det">
                                     <div class="major">{{request.type == 'leave' ? request.fullName : request.employeeDetails?.employeeName}}</div>
-                                    <div *ngIf="request.type == 'leave'" class="minor">{{strToDate(request.leaveStartDate) | date : 'd MMM, yyyy'}} - {{strToDate(request.leaveEndDate) | date : 'd MMM, yyyy'}}</div>
-                                    <div *ngIf="request.type == 'expense'" class="minor">NGN {{request.amount.toLocaleString()}} - {{request.expenseTypeName}}</div>
+                                    <div *ngIf="request.type == 'leave'" class="minor">{{request.leaveStartDate | date : 'd MMM, yyyy'}} - {{request.leaveEndDate | date : 'd MMM, yyyy'}}</div>
+                                    <div *ngIf="request.type == 'expense'" class="minor">NGN {{request.amount | localeString}} - {{request.expenseTypeName}}</div>
                                 </div>
                                 <div class="det">
                                     <div *ngIf="request.status == 'Approved'" class="status sm approved">Approved</div>

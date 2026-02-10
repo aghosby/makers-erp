@@ -58,7 +58,7 @@
                 </div>
             </div>
 
-            <div class="cont inner-row-hld card-xlg card-ymd d-flex justify-content-between ps-3">
+            <div class="cont inner-row-hld card-xlg card-ymd d-flex flex-column justify-content-between ps-3">
                 <div class="info-wrap mt-lg-4">
                     <div class="info-list space">
                         <div class="info tri">
@@ -117,6 +117,24 @@
                             <span class="text">{{employeeDetails?.nextOfKinAddress ? employeeDetails?.nextOfKinAddress : '-'}}</span>
                         </div>
                         
+                    </div>
+                </div>
+
+                <div *ngIf="employeeDetails" class="info-wrap mt-3">
+                    <div class="row-card w-100 card-xlg card-yxl">
+                        <div class="inner-row w-100 d-flex justify-content-between align-items-center">
+                            <div class="card-title md">Documents</div>
+                            <button (click)="uploadDocument()" class="edit cta quick trans-bkg md">Upload Document</button>
+                        </div>
+
+                        <div class="inner-row w-100">
+                            <app-no-data
+                                [height]="'10.5rem'"
+                                [icon]="'folderOpen'"
+                                [message]="'No documents exist'"
+                            >
+                            </app-no-data>
+                        </div>
                     </div>
                 </div>
             </div>

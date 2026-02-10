@@ -37,10 +37,16 @@
                     <div *ngIf="item.notificationType === 'Meeting Invitation'" class="icon" [class.text-primary]="item.notificationType === 'Meeting Invitation'">
                         <app-icon [iconName]="'calendar'" [iconWidth]="28" [iconHeight]="28"></app-icon>
                     </div>
+                    <div *ngIf="item.notificationType === 'Expense Request'" class="icon" [class.text-info]="item.notificationType === 'Expense Request'">
+                        <app-icon [iconName]="'wallet'" [iconWidth]="28" [iconHeight]="28"></app-icon>
+                    </div>
+                    <div *ngIf="item.notificationType === 'Appraisal Reviewed'" class="icon" [class.text-success]="item.notificationType === 'Appraisal Reviewed'">
+                        <app-icon [iconName]="'medalStar'" [iconWidth]="28" [iconHeight]="28"></app-icon>
+                    </div>
                     <div class="content">
                         <div class="det">
-                            <div class="major">{{item.notificationContent}}</div>
-                            <div class="minor d-flex align-items-center justify-content-between mt-1">Steven Maddison <span>{{item.createdAt | timeDuration}}</span></div>
+                            <div class="major font-regular">{{item.notificationContent}}</div>
+                            <div class="minor d-flex align-items-center justify-content-between mt-1"><span>{{item.createdAt | timeDuration}}</span></div>
                             <!-- <div *ngIf="request.type == 'expense'" class="minor">NGN {{request.amount.toLocaleString()}} - {{request.expenseTypeName}}</div> -->
                         </div>
                     </div>

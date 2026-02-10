@@ -27,6 +27,10 @@ export class SelfServicePayrollComponent implements OnInit {
   payrollCreditList: any[] = [];
 
   payrollPeriods: any[] = [];
+  payrollYears:any;
+  currentPayrollYear:any;
+  payrollGraphData: any[] = [];
+
   displayedColumns: any[];
   dataSource: MatTableDataSource<PayrollSummary>;
 
@@ -150,7 +154,7 @@ export class SelfServicePayrollComponent implements OnInit {
   AreaHighcharts: typeof Highcharts = Highcharts;
   areaChartOptions: Highcharts.Options = {
     title: {
-      text: "Gross Pay"
+      text: ""
     },
     credits: {
       enabled: false
@@ -161,11 +165,11 @@ export class SelfServicePayrollComponent implements OnInit {
     },
     yAxis: {          
       title:{
-        text:"Naira"
+        text:""
       },
       labels: {
         formatter: function () {
-          return '₦' + this.axis.defaultLabelFormatter.call(this) + 'K';
+          return '₦ ' + this.axis.defaultLabelFormatter.call(this) + 'K';
         }            
       }
     },
@@ -178,8 +182,9 @@ export class SelfServicePayrollComponent implements OnInit {
     series: [
       {
         type: 'areaspline',
-        name: 'Gross Pay',
-        data: [2.9, 3.2, 2.7, 3.5, 2.9, 2.2, 3.0, 3.6, 3.2, 3.3, 3.6, 4.8],
+        name: 'Revenue',
+        showInLegend: false,
+        data: [7.9, 10.2, 13.7, 16.5, 17.9, 15.2, 17.0, 20.6, 22.2, 26.3, 29.6, 27.8],
         fillColor: {
           linearGradient: { x1: 0, x2: 0, y1: 0, y2: 1 },
           stops: [
@@ -232,6 +237,12 @@ export class SelfServicePayrollComponent implements OnInit {
       this.employeeDetails = this.authService.loggedInUser.data;
     });
   }
+
+  changePayrollYear(year:any) {
+    this.currentPayrollYear = year;
+    this.hrService.getPayrollGraph(year).subscribe(res => this.payrollGraphData = res.data);
+  }
+
 
   strToDate(dateVal: string, key:string) {
     // console.log(dateVal);

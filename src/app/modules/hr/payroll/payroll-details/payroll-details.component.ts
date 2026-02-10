@@ -22,7 +22,7 @@ import { takeUntil } from 'rxjs/operators';
 })
 export class PayrollDetailsComponent implements OnInit {
 
-
+  apiLoading:boolean = false;
   tableColumns: TableColumn[];
   tableData: any[] = [];
   columnsCount: number = 3;

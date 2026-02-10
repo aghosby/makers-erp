@@ -168,6 +168,19 @@
 
                     <tr class="mat-row" *matNoDataRow>
                         <td class="mat-cell" [attr.colspan]="displayedColumns.length">
+                            <app-loading-data *ngIf="apiLoading" [height]="'15rem'"></app-loading-data>
+                            <app-no-data
+                                *ngIf="payrollPeriodData && !apiLoading && payrollPeriodData.length == 0" 
+                                [height]="'15rem'"
+                                [icon]="'wallet'"
+                                [message]="'No payroll records were found'"
+                            >
+                            </app-no-data>
+                        </td>
+                    </tr>
+
+                    <tr class="mat-row" *matNoDataRow>
+                        <td class="mat-cell" [attr.colspan]="displayedColumns.length">
                             <div class="empty-data">
                                 <img src="../../../../assets/images/illustrations/empty1.png" alt=""/>
                                 <div class="text">No records were found.</div>

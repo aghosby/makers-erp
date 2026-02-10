@@ -20,7 +20,7 @@ export class Interceptor implements HttpInterceptor {
     request: HttpRequest<any>,
     next: HttpHandler
   ): Observable<HttpEvent<any>> {
-    console.log('Intercept called:', request.url);
+    // console.log('Intercept called:', request.url);
 
     // Optional: add Authorization header here
     request = request.clone({
@@ -44,7 +44,7 @@ export class Interceptor implements HttpInterceptor {
 
           case 403:
             this.notificationService.warning('You do not have access to that', 'Unauthorized');
-            break;
+          break;
 
           default:
             const message = error?.error?.error ?? 'An unexpected error occurred. Please try again.';
