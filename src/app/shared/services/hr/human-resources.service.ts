@@ -386,12 +386,12 @@ export class HumanResourcesService {
 
   //Approve Payroll
   public approvePayroll(payrollPeriodId:string): Observable<any> {
-    return this.http.patch<any>(`${this.path}/approvePayroll/${payrollPeriodId}`, this.requestOptions);
+    return this.http.patch<any>(`${this.path}/approvePayroll/${payrollPeriodId}`, undefined, this.requestOptions);
   }
 
   //Disburse Payroll
   public disbursePayroll(payrollPeriodId:string): Observable<any> {
-    return this.http.patch<any>(`${this.path}/disbursePayroll/${payrollPeriodId}`, this.requestOptions);
+    return this.http.patch<any>(`${this.path}/disbursePayroll/${payrollPeriodId}`, undefined, this.requestOptions);
   }
 
   /*************** SALARY SCALE RELATED ACTIONS ***************/
