@@ -167,13 +167,21 @@
                         <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
                         <tr mat-row *matRowDef="let emprow; columns: displayedColumns"></tr>
                         <tr class="mat-row" *matNoDataRow>
-                            <td class="mat-cell" [attr.colspan]="displayedColumns.length">
-                                <div class="empty-data">
-                                    <img src="../../../../assets/images/illustrations/empty1.png" alt=""/>
-                                    <div class="text">No payroll records were found.</div>
-                                </div>
-                            </td>
-                        </tr>
+                        <td class="mat-cell" [attr.colspan]="displayedColumns.length">
+                            <!-- <app-loading-data *ngIf="!requestedApprovals" [height]="'15rem'"></app-loading-data> -->
+                            <app-no-data
+                                *ngIf="payrollPeriods" 
+                                [height]="'15rem'"
+                                [icon]="'wallet'"
+                                [message]="'No payroll records exist'"
+                            >
+                            </app-no-data>
+                            <!-- <div class="empty-data">
+                                <img src="../../../../assets/images/illustrations/empty1.png" alt=""/>
+                                <div class="text">No leave request records exist.</div>
+                            </div> -->
+                        </td>
+                    </tr>
                         
                     </table>
                 </div>

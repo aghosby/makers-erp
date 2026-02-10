@@ -161,9 +161,9 @@ export class EmployeeAbsenceComponent implements OnInit {
         daysUsed: item.daysUsed,
         totalDays: item.noOfLeaveDays,
         name: item.leaveName,
-        colorDark: this.leaveAttr[index].colorDark,
-        colorLight: this.leaveAttr[index].colorLight,
-        icon: this.leaveAttr[index].icon
+        colorDark: this.leaveAttr[index]?.colorDark ?? '',
+        colorLight: this.leaveAttr[index]?.colorLight ?? '',
+        icon: this.leaveAttr[index]?.icon
       }
       return data;
     });

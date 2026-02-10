@@ -64,7 +64,7 @@ export class PayrollDetailsComponent implements OnInit {
       isExisting: false
     }
     this.getPageData();
-    this.payrollCurrentStep = 1;
+    this.payrollCurrentStep = 0;
     this.payrollRunSteps = [
       {
         icon: 'calendarTime',

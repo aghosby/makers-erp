@@ -31,7 +31,7 @@ export class ExpenseManagementComponent implements OnInit {
   AreaHighcharts: typeof Highcharts = Highcharts;
   areaChartOptions: Highcharts.Options = {
     title: {
-      text: "Expense History"
+      text: ""
     },
     credits: {
       enabled: false
@@ -42,16 +42,16 @@ export class ExpenseManagementComponent implements OnInit {
     },
     yAxis: {          
       title:{
-        text:"Naira"
+        text:""
       },
       labels: {
         formatter: function () {
-          return 'NGN' + this.axis.defaultLabelFormatter.call(this) + 'K';
+          return '₦ ' + this.axis.defaultLabelFormatter.call(this) + 'K';
         }            
       }
     },
     tooltip: {
-      valuePrefix:"NGN",
+      valuePrefix:"₦",
       valueSuffix:"K",
     },
     //colors: ['#058DC7', '#50B432', '#ED561B', '#DDDF00', '#24CBE5', '#64E572', '#FF9655', '#FFF263', '#6AF9C4'],
@@ -59,7 +59,8 @@ export class ExpenseManagementComponent implements OnInit {
     series: [
       {
         type: 'areaspline',
-        name: 'Months',
+        name: 'Revenue',
+        showInLegend: false,
         data: [7.9, 10.2, 13.7, 16.5, 17.9, 15.2, 17.0, 20.6, 22.2, 26.3, 29.6, 27.8],
         fillColor: {
           linearGradient: { x1: 0, x2: 0, y1: 0, y2: 1 },

@@ -118,9 +118,6 @@ export class EmployeeDetailsComponent implements OnInit {
 
   getPageData = async () => {
     const employeeDetails$ = this.hrService.getEmployeeDetails(this.employeeId).subscribe(res => this.employeeDetails = res.data)
-    // this.employeeDetails = await this.hrService.getEmployeeDetails(this.employeeId).toPromise();
-    // this.employeeDetails = this.employeeDetails['data'];
-    //console.log(this.employeeDetails);
     this.departmentList = await this.hrService.getDepartments().toPromise();
     this.designationList = await this.hrService.getDesignations().toPromise();
 
@@ -129,19 +126,19 @@ export class EmployeeDetailsComponent implements OnInit {
     this.leaveSummary = this.employeeDetails.leaveAssignment;
     this.totalLeaveDays = this.leaveSummary.reduce((n, {noOfLeaveDays}) => n + noOfLeaveDays, 0);
     this.leaveDaysUsed = this.leaveSummary.reduce((n, {daysUsed}) => n + daysUsed, 0);
-    this.leaveBreakdown = this.leaveSummary.map((item, index) => {
-      let data = {
-        id: index + 1,
-        daysUsed: item.daysUsed,
-        totalDays: item.noOfLeaveDays,
-        name: item.leaveName,
-        colorDark: this.leaveAttr[index].colorDark,
-        colorLight: this.leaveAttr[index].colorLight,
-        icon: this.leaveAttr[index].icon
-      }
-      return data;
-    });
-    console.log(this.leaveBreakdown);
+    // this.leaveBreakdown = this.leaveSummary.map((item, index) => {
+    //   let data = {
+    //     id: index + 1,
+    //     daysUsed: item.daysUsed,
+    //     totalDays: item.noOfLeaveDays,
+    //     name: item.leaveName,
+    //     colorDark: this.leaveAttr[index].colorDark,
+    //     colorLight: this.leaveAttr[index].colorLight,
+    //     icon: this.leaveAttr[index].icon
+    //   }
+    //   return data;
+    // });
+    // console.log(this.leaveBreakdown);
 
     this.Highcharts = Highcharts;
     this.chartOptions = {
