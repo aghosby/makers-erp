@@ -288,7 +288,7 @@ const routes: Routes = [
     children:[
       {
         path: '',
-        redirectTo: 'dashboard',
+        redirectTo: 'employees',
         pathMatch: 'full'
       },
       {

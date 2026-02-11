@@ -16,14 +16,14 @@ export class AccountSettingsPortalComponent implements OnInit {
       routeLink: 'roles-permissions',
       label: 'Modules, Roles & Permissions',
     },
-    {
-      routeLink: 'subscription/history',
-      label: 'Subscriptions',
-    },
-    {
-      routeLink: 'billing',
-      label: 'Billing',
-    },
+    // {
+    //   routeLink: 'subscription/history',
+    //   label: 'Subscriptions',
+    // },
+    // {
+    //   routeLink: 'billing',
+    //   label: 'Billing',
+    // },
     {
       routeLink: 'audit-trails',
       label: 'Audit Trail',

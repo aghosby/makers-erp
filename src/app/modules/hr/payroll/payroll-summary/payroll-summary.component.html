@@ -142,8 +142,8 @@
                                 <th [style.width]="column.columnWidth" mat-header-cell *matHeaderCellDef>{{column.label}}</th>
                                 <td mat-cell 
                                     *matCellDef="let row">
-                                    <span class="status approved" *ngIf="row[column.key] == 'Completed'">{{ row[column.key] }}</span>
-                                    <span class="status pending" *ngIf="row[column.key] == 'Pending'">{{ row[column.key] }}</span>
+                                    <span class="status approved" *ngIf="row[column.key] == 'Disbursed'">{{ row[column.key] }}</span>
+                                    <span class="status pending" *ngIf="row[column.key] !== 'Disbursed'">{{ row[column.key] }}</span>
                                 </td>
                             </ng-container>
 

@@ -197,14 +197,16 @@
                 height: 100%;
                 position: relative;
                 overflow: hidden;
+                padding: 1rem;
 
                 &:first-child {
-                    display: none;
-                    padding: 1rem 7rem;
+                    //display: none;
+                    padding: 1rem;
                     //background: var(--primary);
 
                     @include screen-media-min(md) {
                         display: block;
+                        padding: 1rem 7rem;
                     }
 
                     @include screen-media-min(xxl) {
@@ -283,7 +285,7 @@
             display: flex;
             overflow: hidden;
             text-align: center;
-            padding: 3rem 0 4rem;
+            padding: 5rem 0 4rem;
             // background-color: white;
             flex-direction: column;
             justify-content: center;
@@ -292,6 +294,10 @@
             position: relative;
             z-index: 3;
             // color: white;
+
+            @include screen-media-min(md) {
+                padding: 2rem 0 4rem;
+            }
         
             .logo {
         
@@ -305,8 +311,12 @@
                 color: black;
         
                 .heading {
-                    font-size: 1.7rem;
+                    font-size: 1.5rem;
                     font-family: var(--font-bold);
+
+                    @include screen-media-min(md) {
+                        font-size: 1.7rem;
+                    }
         
                     span {
                         display: flex;
@@ -473,8 +483,8 @@
             height: 4rem;
 
             .globe {
-                width: 2.6rem;
-                height: 2.6rem;
+                width: 4rem;
+                height: 4rem;
                 top: 17%;
 
                 @include screen-media-min(md) {

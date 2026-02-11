@@ -1,1 +1,216 @@
-<p>expense-reports works!</p>
+<div class="content-wrap">
+    <div class="row-section mt-lg-0">
+        <div class="inner-row-hld d-flex align-items-start justify-content-between">
+            <div class="row-card card-xxl card-yxl">
+
+                <div class="inner-row d-flex justify-content-between align-items-center mt-lg-0">
+                    <div class="card-title md">Expense Request History</div>
+                    <div class="bulk-actions d-flex justify-content-between align-items-center">
+                        <div class="cta trans-bkg icon sm ms-lg-3">
+                            <span class="icon pe-1">
+                                <app-icon [iconName]="'export'" [iconWidth]="24" [iconHeight]="24"></app-icon>
+                            </span>
+                            Export
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row-section mt-3 mb-lg-4 pb-10">
+        <div class="table-wrap">
+            <div class="inner-row d-flex justify-content-start align-items-center">
+                <div class="search-bar">
+                    <span class="icon"><i class="bi bi-search"></i></span>
+                    <input (input)="updateSearch($event.target.value)" type="text" placeholder="Search for an employee">
+                </div>
+
+                <!-- <div (click)="showFilters = !showFilters" class="filter-options" role="button">
+                    <div class="filter-trigger"><i class="bi bi-filter"></i> Filter</div>
+                </div> -->
+
+                <div (click)="showFilters = !showFilters" class="cta trans-bkg icon md ms-lg-3">
+                    <span class="icon pe-1">
+                        <app-icon [iconName]="'funnel'" [iconWidth]="24" [iconHeight]="24"></app-icon>
+                    </span>
+                    Filter
+                </div>
+
+                <div class="bulk-actions d-flex justify-content-between align-items-center">
+                    <div [matMenuTriggerFor]="bulkOptions" class="dropdown-trigger"> Bulk Actions <i class="bi bi-chevron-down"></i></div>
+                    <mat-menu #bulkOptions="matMenu" class="more">
+                    </mat-menu>
+                    <div class="cta primary-bkg sm ms-lg-2">Apply</div>
+                </div>
+            </div>
+
+            <div *ngIf="showFilters" class="inner-row d-flex justify-content-start align-items-center filter-wrap">
+                <!-- parent.component.html -->
+                <app-table-filter
+                    [filters]="tableFilters"
+                    [initialState]="{}"
+                    (filtersChange)="onFiltersChange($event)"
+                    [fWidth]="160"
+                ></app-table-filter>
+
+            </div>
+
+            <div class="inner-row">
+                <table 
+                    mat-table
+                    [dataSource]="dataSource"
+                    class="dataTable lg mat-elevation-z0"
+                    matSort
+                >
+                    <!-- Table Columns -->
+                    <ng-container *ngFor="let column of tableColumns; let row" [matColumnDef]="column.label">
+                        <ng-container *ngIf="column.key == 'select'">
+                            <th style="width:5%" mat-header-cell *matHeaderCellDef>
+                                <mat-checkbox 
+                                    color="warn"
+                                    (change)="$event ? masterToggle() : null"
+                                    [checked]="selection.hasValue() && isAllSelected()"
+                                    [indeterminate]="selection.hasValue() && !isAllSelected()">
+                                </mat-checkbox>
+                            </th>
+                    
+                            <td mat-cell *matCellDef="let row">
+                                <mat-checkbox
+                                    color="warn" 
+                                    (click)="$event.stopPropagation()"
+                                    (change)="$event ? selection.toggle(row) : null"
+                                    [checked]="selection.isSelected(row)">
+                                </mat-checkbox>
+                            </td>
+                        </ng-container>
+
+                        <ng-container *ngIf="column.key == 'image'">
+                            <th style="width:5%" mat-header-cell *matHeaderCellDef>
+                            </th>
+                            <td style="width:1%; white-space: nowrap;" mat-cell 
+                                *matCellDef="let row">
+                                <span *ngIf="!row.employeeDetails.profilePic" class="initials">{{row.fullName[0] }}</span>
+                                <span *ngIf="row.employeeDetails.profilePic" class="table-img bkg-standard" style="background-image: url('{{row.employeeDetails.profilePic}}');"></span>
+                            </td>
+                        </ng-container>
+
+                        <ng-container *ngIf="column.key == 'attachment'">
+                            <th [style.width]="column.columnWidth" mat-header-cell *matHeaderCellDef></th>
+                            <td mat-cell *matCellDef="let row">
+                                <a target="_blank" [href]="row[column.key]">
+                                    <span class="icon adobe"><i class="bi bi-file-earmark-pdf"></i></span>
+                                </a>
+                            </td>
+                        </ng-container>
+
+                        <ng-container *ngIf="column.key == 'dateRequested' || column.key == 'expenseDate'">
+                            <th [style.width]="column.columnWidth" mat-header-cell *matHeaderCellDef>{{column.label}}</th>
+                            <td mat-cell *matCellDef="let row">{{ row[column.key] | localeDate : 'd MMM, yyyy'}}</td>
+                            <!-- <td mat-cell *matCellDef="let row">{{ row[column.key]}}</td> -->
+                        </ng-container>
+
+                        <ng-container *ngIf="column.key == 'department'">
+                            <th [style.width]="column.columnWidth" mat-header-cell *matHeaderCellDef>{{column.label}}</th>
+                            <td mat-cell *matCellDef="let row">{{ row.employeeDetails.department }}</td>
+                        </ng-container>
+
+                        <ng-container *ngIf="column.key == 'amount'">
+                            <th [style.width]="column.columnWidth" mat-header-cell *matHeaderCellDef>{{column.label}}</th>
+                            <td mat-cell *matCellDef="let row">{{ row[column.key] | localeString }}</td>
+                        </ng-container>
+
+                        <ng-container *ngIf="column.key == 'status'">
+                            <th [style.width]="column.columnWidth" mat-header-cell *matHeaderCellDef>{{column.label}}</th>
+                            <td mat-cell 
+                                *matCellDef="let row">
+                                <span class="status approved" *ngIf="row[column.key] == 'Approved'">{{ row[column.key] }}</span>
+                                <span class="status pending" *ngIf="row[column.key] == 'Pending'">{{ row[column.key] }}</span>
+                                <span class="status rejected" *ngIf="row[column.key] == 'Declined'">{{ row[column.key] }}</span>
+                            </td>
+                        </ng-container>
+
+                        <!-- <ng-container *ngIf="column.key == 'leaveType'">
+                            <th [style.width]="column.columnWidth" mat-header-cell *matHeaderCellDef>{{column.label}}</th>
+                            <td mat-cell *matCellDef="let row">
+                                <span class="icon" *ngIf="row[column.key] != 'Unpaid' || row[column.key] != 'Sick'"><i class="bi bi-cash"></i> {{ row[column.key] }}</span>
+                                <span class="icon" *ngIf="row[column.label] == 'Unpaid'"><i class="bi bi-exclamation-diamond"></i> {{ row[column.label] }}</span>
+                                <span class="icon" *ngIf="row[column.label] == 'Sick'"><i class="bi bi-bandaid"></i> {{ row[column.label] }}</span>
+                            </td>
+                        </ng-container> -->
+
+                        <ng-container *ngIf="column.key == 'leaveStartDate' || column.key == 'leaveEndDate' || column.key == 'requestDate'">
+                            <th [style.width]="column.columnWidth" mat-header-cell *matHeaderCellDef>{{ column.label }}</th>
+                            <td mat-cell *matCellDef="let row">{{ row[column.key] | localeDate: 'd MMM, y'}}</td>
+                        </ng-container>
+
+                        <ng-container *ngIf="column.key == 'actions'">
+                            <th style="width:5%" mat-header-cell *matHeaderCellDef>
+                            </th>
+                            <td style="width:1%; white-space: nowrap;" mat-cell *matCellDef="let element">
+                                <span (click)="actionRequest(element)" class="table-icon edit"><i class="bi bi-pen-fill"></i></span>
+                                <span *ngIf="element['Status'] == 'Pending'" class="table-icon delete ms-lg-3"><i class="bi bi-trash3-fill"></i></span>
+                            </td>
+                        </ng-container>
+
+                        <!-- <ng-container *ngIf="column.key == 'activeStatus'">
+                            <th [style.width]="column.columnWidth" mat-header-cell *matHeaderCellDef>{{ column.label }}</th>
+                            <td style="white-space: nowrap;" mat-cell *matCellDef="let row">
+                                <span class="status approved" *ngIf="row[column.key] == true">Active</span>
+                                <span class="status pending" *ngIf="row[column.key] == false">Pending</span>
+                            </td>
+                        </ng-container> -->
+
+                        <ng-container>
+                            <th [style.width]="column.columnWidth" mat-header-cell *matHeaderCellDef>{{ column.key == 'image' || column.key == 'actions' ? "" : column.label }}</th>
+                            <td mat-cell *matCellDef="let row">{{ row[column.key] }}</td>
+                        </ng-container>
+                        
+                    </ng-container>
+
+
+                    <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+                    <tr mat-row *matRowDef="let emprow; columns: displayedColumns"></tr>
+
+                    <tr class="mat-row" *matNoDataRow>
+                        <td class="mat-cell" [attr.colspan]="displayedColumns.length">
+                            <app-loading-data *ngIf="apiLoading" [height]="'15rem'"></app-loading-data>
+                            <app-no-data
+                                *ngIf="tableData && !apiLoading && tableData.length == 0" 
+                                [height]="'15rem'"
+                                [icon]="'calendarTime'"
+                                [message]="'No absence records were found'"
+                            >
+                            </app-no-data>
+                        </td>
+                    </tr>
+
+                    <!-- <tr class="mat-row" *matNoDataRow>
+                        <td *ngIf="employeeList" class="mat-cell" [attr.colspan]="displayedColumns.length">
+                            <div class="empty-data">
+                                <img src="../../../../assets/images/illustrations/empty1.png" alt=""/>
+                                <div class="text">No employee records were found.</div>
+                            </div>
+                        </td>
+                    </tr> -->
+
+                    <!-- <tr class="mat-row" *ngIf="!employeeList">
+                        <td class="mat-cell" [attr.colspan]="displayedColumns.length">
+                            <app-loading-data [height]="'25rem'"></app-loading-data>
+                        </td>
+                    </tr> -->
+                    
+                </table>
+
+                <ng-container>
+                    <mat-paginator 
+                        [length]="totalItems" 
+                        [pageSize]="pageSize" 
+                        [pageSizeOptions]="[5, 10, 20]"
+                    >
+                    </mat-paginator>
+                </ng-container>
+            </div>
+        </div>
+    </div>
+</div>

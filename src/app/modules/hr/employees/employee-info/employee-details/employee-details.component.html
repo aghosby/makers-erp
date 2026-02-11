@@ -16,7 +16,7 @@
                     <div class="info tri">
                         <span class="label">Birthday:</span>
                         <span *ngIf="!employeeDetails?.dateOfBirth">-</span>
-                        <span *ngIf="employeeDetails?.dateOfBirth" class="text">{{strToDate(employeeDetails?.dateOfBirth) | date: 'd MMMM, y'}}</span>
+                        <span *ngIf="employeeDetails?.dateOfBirth" class="text">{{employeeDetails?.dateOfBirth | localeDate: 'd MMM, y'}}</span>
                     </div>
                     
                     <div class="info duo">
@@ -59,7 +59,7 @@
         </div>
     </div>
 
-    <div *ngIf="employeeDetails" class="row-section mt-4">
+    <div class="row-section mt-4">
         <div class="row-card w-100 card-xlg card-yxl">
             <div class="inner-row w-100 d-flex justify-content-between align-items-center">
                 <div class="card-title md">Documents</div>

@@ -54,7 +54,7 @@
                             </div>
                             <div class="item">
                                 <span class="label">Date Joined:</span>
-                                <span class="text">{{strToDate(employeeDetails?.employmentStartDate) | date : 'd MMMM, y'}}</span>
+                                <span class="text">{{employeeDetails?.employmentStartDate | localeDate : 'd MMMM, y'}}</span>
                             </div>
                             <div class="item">
                                 <span class="label">Contract Type:</span>

@@ -126,10 +126,6 @@ export class EmployeesListComponent implements OnInit {
   employeeFilters: FilterConfig[];
   showFilters:boolean = false;
 
-  // in parent component
-  
-
-
   public search$ = new BehaviorSubject<string>('');
   public page$ = new BehaviorSubject<number>(1);
   public size$ = new BehaviorSubject<number>(10);

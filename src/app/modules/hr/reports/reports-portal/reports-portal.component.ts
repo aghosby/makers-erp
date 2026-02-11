@@ -8,10 +8,10 @@ import { Component, OnInit } from '@angular/core';
 export class ReportsPortalComponent implements OnInit {
 
   tabMenu = [
-    {
-      routeLink: 'dashboard',
-      label: 'Dashboard',
-    },
+    // {
+    //   routeLink: 'dashboard',
+    //   label: 'Dashboard',
+    // },
     {
       routeLink: 'employees',
       label: 'Employees',
@@ -20,14 +20,14 @@ export class ReportsPortalComponent implements OnInit {
       routeLink: 'absence',
       label: 'Absence',
     },
-    {
-      routeLink: 'payroll',
-      label: 'Payroll',
-    },
-    {
-      routeLink: 'appraisal',
-      label: 'Appraisal',
-    },
+    // {
+    //   routeLink: 'payroll',
+    //   label: 'Payroll',
+    // },
+    // {
+    //   routeLink: 'appraisal',
+    //   label: 'Appraisal',
+    // },
     {
       routeLink: 'expense',
       label: 'Expense',

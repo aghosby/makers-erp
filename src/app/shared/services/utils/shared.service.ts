@@ -86,4 +86,18 @@ export class SharedService {
     else return {}    
   }
 
+  // Change label display text
+  getRangeDisplayText = (page: number, pageSize: number, length: number) => {
+    const initialText = `Page`;  // customize this line
+    if (length == 0 || pageSize == 0) {
+      return `${initialText} 0 of ${length}`;
+    }
+    length = Math.max(length, 0);
+    const startIndex = page * pageSize;
+    const endIndex = startIndex < length 
+      ? Math.min(startIndex + pageSize, length) 
+      : startIndex + pageSize;
+    return `${initialText} ${startIndex + 1} to ${endIndex} of ${length}`; // customize this line
+  };
+
 }

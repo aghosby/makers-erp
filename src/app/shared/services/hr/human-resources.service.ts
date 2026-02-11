@@ -207,8 +207,12 @@ export class HumanResourcesService {
   }
 
   //Get the list of all requested leave applications
-  public getRequestedLeaveApprovals(): Observable<any> {
-    return this.http.get<any>(`${this.path}/fetchRequestedLeaves`, this.requestOptions);
+  public getRequestedLeaveApprovals(pageNo?:number, pageSize?:number, searchParam?:string, filters?:any): Observable<any> {
+    const params: { [k: string]: any } = { page: pageNo ?? 1, limit: pageSize ?? 10 }; 
+    if (searchParam) params.search = searchParam; 
+    Object.assign(params, filters || {});
+    const url = buildUrlWithParams(`${this.path}/fetchRequestedLeaves`, params);
+    return this.http.get<any>(url, this.requestOptions);
   }
 
   //Get details of employee leave applications on a graph
@@ -283,8 +287,12 @@ export class HumanResourcesService {
   }
 
   //Get the list of all requested expense applications
-  public getRequestedExpenseApprovals(): Observable<any> {
-    return this.http.get<any>(`${this.path}/fetchApprovalExpenseRequest`, this.requestOptions);
+  public getRequestedExpenseApprovals(pageNo?:number, pageSize?:number, searchParam?:string, filters?:any): Observable<any> {
+    const params: { [k: string]: any } = { page: pageNo ?? 1, limit: pageSize ?? 10 }; 
+    if (searchParam) params.search = searchParam; 
+    Object.assign(params, filters || {});
+    const url = buildUrlWithParams(`${this.path}/fetchApprovalExpenseRequest`, params);
+    return this.http.get<any>(url, this.requestOptions);
   }
 
   //Update Expense Request
