@@ -107,13 +107,15 @@ export class HeaderComponent implements OnInit {
   }
 
   markAllAsRead() {
-    const unreadIds = this.notifications.filter(n => !n.read).map(n => n._id);
-    if (unreadIds.length === 0) return;
+    const unread = this.notifications.filter(n => !n.read);
+    if (unread.length === 0) return;
 
-    this.notifications = this.notifications.map(n => {
+    unread.forEach(n => {
       this.sharedService.readNotification(n._id).subscribe((res) => {
-        if(res.success) this.notificationBadgeCount = this.notificationBadgeCount - 1;
-        else return
+        if (res.success) { 
+          n.read = true;
+          this.notificationBadgeCount--;
+        }
       });
     });    
   }

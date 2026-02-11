@@ -97,7 +97,7 @@
 
                         <ng-container *ngIf="column.key == 'employmentStartDate'">
                             <th [style.width]="column.columnWidth" mat-header-cell *matHeaderCellDef>{{ column.label }}</th>
-                            <td mat-cell *matCellDef="let row">{{ row.employmentStartDate | date : 'd MMM, y'}}</td>
+                            <td mat-cell *matCellDef="let row">{{ row.employmentStartDate | localeDate: 'd MMM, y' }}</td>
                         </ng-container>
 
                         <ng-container *ngIf="column.key == 'department'">
