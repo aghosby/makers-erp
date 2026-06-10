@@ -1,0 +1,36 @@
+.page-sub {
+    font-family: var(--font-regular);
+    font-size: 0.78rem;
+    color: var(--text-sub);
+    margin-top: 0.25rem;
+    letter-spacing: 0.01em;
+}
+
+.entity-badge {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 2rem;
+    height: 2rem;
+    border-radius: 50%;
+    background: var(--primary-lightest);
+    color: var(--primary);
+    font-family: var(--font-bold);
+    font-size: 0.65rem;
+    letter-spacing: 0.02em;
+    flex-shrink: 0;
+}
+
+.source-badge {
+    display: inline-block;
+    padding: 0.2rem 0.6rem;
+    border-radius: 4px;
+    font-family: var(--font-medium);
+    font-size: 0.72rem;
+
+    &.source-manual  { background: #f0f0f0;  color: #555; }
+    &.source-bill    { background: #ffe0e0;  color: #c62828; }
+    &.source-invoice { background: #e8f5e9;  color: #2e7d32; }
+    &.source-payroll { background: #f3e5f5;  color: #6a1b9a; }
+    &.source-payment { background: #e3f2fd;  color: #1565c0; }
+}

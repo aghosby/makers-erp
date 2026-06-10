@@ -1,0 +1,92 @@
+<div class="content-wrap">
+
+    <div class="row-section d-flex flex-wrap justify-content-between align-items-center">
+        <div class="page-header">
+            <span (click)="goBack()" class="back-btn"><i class="bi bi-arrow-left"></i></span>
+            <span *ngIf="vendorDetails">{{ vendorDetails.vendorName }}</span>
+            <span *ngIf="!vendorDetails && !isLoading">Vendor</span>
+        </div>
+        <div class="main-actions" *ngIf="vendorDetails">
+            <div (click)="editVendor()" class="cta trans-bkg icon md">
+                <span class="icon">
+                    <app-icon [iconName]="'edit'" [iconWidth]="'15'" [iconHeight]="'15'"></app-icon>
+                </span>
+                Edit Vendor
+            </div>
+        </div>
+
+        <div class="col-lg-12 mt-lg-4">
+            <div class="tab-wrap py-0 px-0">
+                <ul class="tab-list">
+                    <li *ngFor="let link of tabMenu">
+                        <a [routerLink]="[link.routeLink]" routerLinkActive="active" [routerLinkActiveOptions]="{exact: true}">
+                            <span>{{ link.label }}</span>
+                        </a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </div>
+
+    <div *ngIf="isLoading" class="row-section w-100">
+        <app-loading-data [height]="'15rem'"></app-loading-data>
+    </div>
+
+    <div *ngIf="!isLoading && vendorDetails" class="row-section my-lg-4">
+        <div class="inner-row-hld d-flex justify-content-between">
+
+            <!-- Side card -->
+            <div class="row-card card-xsm card-ymd">
+                <div class="cont side-cont rd-pd h-auto">
+
+                    <div class="info major">
+                        <div *ngIf="vendorDetails.imageUrl" class="image bkg-standard no-border"
+                             [style.background-image]="'url(' + vendorDetails.imageUrl + ')'"></div>
+                        <div *ngIf="!vendorDetails.imageUrl" class="image initials">
+                            {{ vendorDetails.vendorName?.[0] | uppercase }}
+                        </div>
+                        <div class="det mt-lg-3">
+                            <div class="name">{{ vendorDetails.vendorName }}</div>
+                            <div class="role">{{ vendorDetails.email }}</div>
+                        </div>
+                    </div>
+
+                    <div class="info minor mt-lg-3">
+                        <div class="listed-items">
+                            <div class="item" *ngIf="vendorDetails.contactPersonName">
+                                <span class="label">Contact:</span>
+                                <span class="text">{{ vendorDetails.contactPersonName }}</span>
+                            </div>
+                            <div class="item" *ngIf="vendorDetails.phone">
+                                <span class="label">Phone:</span>
+                                <span class="text">{{ vendorDetails.phone }}</span>
+                            </div>
+                            <div class="item" *ngIf="vendorDetails.address?.city">
+                                <span class="label">Location:</span>
+                                <span class="text">{{ vendorDetails.address.city }}, {{ vendorDetails.address.country }}</span>
+                            </div>
+                            <div class="item">
+                                <span class="label">Active Orders:</span>
+                                <span class="text fw-bold" style="color: var(--primary);">
+                                    {{ vendorDetails.activeOrders ?? 0 }}
+                                </span>
+                            </div>
+                            <div class="item">
+                                <span class="label">Fulfilled:</span>
+                                <span class="text">{{ vendorDetails.fulfilledOrders ?? 0 }}</span>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+
+            <!-- Main content: child routes -->
+            <div class="row-card card-xlg card-ymd">
+                <router-outlet></router-outlet>
+            </div>
+
+        </div>
+    </div>
+
+</div>

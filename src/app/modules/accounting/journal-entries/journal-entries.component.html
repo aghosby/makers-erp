@@ -1,0 +1,56 @@
+<div class="content-wrap">
+
+    <div class="row-section d-flex justify-content-between align-items-center">
+        <div class="page-header">Journal Entries</div>
+        <div class="main-actions">
+            <div (click)="createEntry()" class="cta primary-bkg icon md">
+                <span class="icon">
+                    <app-icon [iconName]="'register'" [iconWidth]="'18'" [iconHeight]="'18'"></app-icon>
+                </span>
+                New journal
+            </div>
+        </div>
+    </div>
+
+    <div class="row-section my-lg-4">
+        <app-data-table
+            [columns]="tableColumns"
+            [data]="filteredEntries"
+            [totalItems]="filteredEntries.length"
+            [isLoading]="isLoading"
+            [filters]="journalFilters"
+            [searchPlaceholder]="'Search by description, entity or source'"
+            [emptyIcon]="'register'"
+            [emptyMessage]="'No journal entries have been posted yet'"
+            (filtersChange)="onFiltersChange($event)"
+        >
+
+            <ng-template appCellTemplate="date" let-row>
+                <span class="major">{{ row.date | date:'d MMM, y' }}</span>
+            </ng-template>
+
+            <ng-template appCellTemplate="entity" let-row>
+                <div class="d-flex align-items-center gap-2">
+                    <div class="entity-badge">{{ row.entityCode }}</div>
+                    <span class="minor">{{ row.entity }}</span>
+                </div>
+            </ng-template>
+
+            <ng-template appCellTemplate="source" let-row>
+                <span class="source-badge source-{{ row.source | lowercase }}">{{ row.source }}</span>
+            </ng-template>
+
+            <ng-template appCellTemplate="amount" let-row>
+                <span class="major fw-bold">{{ currency }}{{ row.amount | number:'1.0-0' }}</span>
+            </ng-template>
+
+            <ng-template appCellTemplate="status" let-row>
+                <span class="status sm" [ngClass]="row.status === 'Posted' ? 'approved' : 'pending'">
+                    {{ row.status }}
+                </span>
+            </ng-template>
+
+        </app-data-table>
+    </div>
+
+</div>

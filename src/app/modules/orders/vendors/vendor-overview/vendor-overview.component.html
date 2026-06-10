@@ -1,0 +1,76 @@
+<div class="content-wrap">
+    <div class="row-section d-flex flex-wrap justify-content-between align-items-center">
+        <div class="page-header"><span (click)="goBack()" class="back-btn"><i class="bi bi-arrow-left"></i></span> Vendor</div>
+        <div class="main-actions d-flex justify-content-start align-items-center">
+            <!-- <div class="cta primary-bkg icon md"><i class="bi bi-diagram-3-fill"></i>View Employee Ladder</div> -->
+        </div>
+
+        <div class="col-lg-12 mt-lg-4">
+            <div class="tab-wrap py-0 px-0">
+                <ul class="tab-list">
+                    <li *ngFor="let link of tabMenu">
+                        <a [routerLink]="[link.routeLink]" routerLinkActive="active" [routerLinkActiveOptions]="{exact:true}">
+                            <!-- <i class="{{link.icon}}"></i> -->
+                            <!-- <mat-icon class="material-icons-round">{{item.icon}}</mat-icon> -->
+                            <span>{{link.label}}</span>
+                        </a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </div>
+
+    <div *ngIf="!vendorDetails" class="row-section w-100">
+        <app-loading-data [height]="'15rem'"></app-loading-data>
+    </div>
+
+    <div *ngIf="vendorDetails" class="row-section my-lg-4">
+        <div class="inner-row-hld d-flex justify-content-between">
+            <div class="row-card card-xsm card-ymd">
+                <div class="cont side-cont rd-pd h-auto">
+                    <div class="info major">
+                        <div *ngIf="vendorDetails?.imageUrl" class="image bkg-standard no-border" style="background-image: url('{{vendorDetails?.imageUrl}}'); background-size: contain;"></div>
+                        <div *ngIf="!vendorDetails?.imageUrl" class="image initials">{{vendorDetails?.vendorName[0]}}</div>
+                        <div class="det mt-lg-3">
+                            <div class="name">{{vendorDetails?.vendorName}}</div>
+                            <!-- <div class="role text-capitalize">{{customerDetails?.companyName}}</div> -->
+
+                            <div class="contact">
+                                <div class="info">
+                                    <span>{{vendorDetails?.email}}</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="info minor mt-lg-3">
+                        <div class="listed-items">
+                            <div class="item">
+                                <span class="label">Active Orders:</span>
+                                <span class="text">{{vendorDetails?.activeOrders}}</span>
+                            </div>
+                            <div class="item">
+                                <span class="label">Fufilled Orders:</span>
+                                <span class="text">{{vendorDetails?.fulfilledOrders}}</span>
+                            </div>
+                            <div class="item">
+                                <span class="label">Status:</span>
+                                <!-- <span class="text">{{vendorDetails?.status}}</span> -->
+                            </div>
+                            <!-- <div class="item">
+                                <span class="label">Date Joined:</span>
+                                <span class="text">{{strToDate(employeeDetails?.employmentStartDate) | date : 'd MMMM, y'}}</span>
+                            </div>
+                            <div class="item">
+                                <span class="label">Contract Type:</span>
+                                <span class="text">{{employeeDetails?.employmentType}}</span>
+                            </div> -->
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="row-card card-xlg card-ymd">
+                <router-outlet></router-outlet>
+            </div>
+        </div>
+    </div>
+</div>

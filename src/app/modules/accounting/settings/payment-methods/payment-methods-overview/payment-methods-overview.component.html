@@ -1,0 +1,88 @@
+<div class="content-wrap">
+    <div class="row-section mt-lg-2">
+        <div class="inner-row-hld d-flex justify-content-between pb-10">
+
+            <div class="row-card card-xxl card-yxl">
+                <div class="table-wrap">
+
+                    <div class="inner-row hdr d-flex justify-content-start align-items-center">
+                        <div class="card-title">Payment Methods</div>
+                        <div class="bulk-actions d-flex align-items-center">
+                            <div (click)="createPaymentMethod()" class="cta primary-bkg sm ms-lg-2">
+                                <span class="icon me-1">
+                                    <app-icon [iconName]="'walletCard'" [iconWidth]="20" [iconHeight]="20"></app-icon>
+                                </span>
+                                Add Payment Method
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="inner-row">
+                        <table
+                            mat-table
+                            [dataSource]="dataSource"
+                            class="dataTable mat-elevation-z0"
+                            matSort
+                        >
+                            <ng-container *ngFor="let column of tableColumns" [matColumnDef]="column.label">
+
+                                <ng-container *ngIf="column.key === 'requiresBankReference' || column.key === 'requiresChequeNumber' || column.key === 'requiresAttachment'">
+                                    <th [style.width]="column.columnWidth" mat-header-cell *matHeaderCellDef>{{ column.label }}</th>
+                                    <td mat-cell *matCellDef="let row">
+                                        <span class="status sm" [ngClass]="row[column.key] ? 'approved' : 'inactive'">
+                                            {{ row[column.key] ? 'Yes' : 'No' }}
+                                        </span>
+                                    </td>
+                                </ng-container>
+
+                                <ng-container *ngIf="column.key === 'status'">
+                                    <th [style.width]="column.columnWidth" mat-header-cell *matHeaderCellDef>{{ column.label }}</th>
+                                    <td mat-cell *matCellDef="let row">
+                                        <span class="status sm" [ngClass]="row.status === 'Active' ? 'approved' : 'inactive'">
+                                            {{ row.status }}
+                                        </span>
+                                    </td>
+                                </ng-container>
+
+                                <ng-container *ngIf="column.key === 'actions'">
+                                    <th style="width: 5%" mat-header-cell *matHeaderCellDef></th>
+                                    <td style="width: 1%; white-space: nowrap;" mat-cell *matCellDef="let row">
+                                        <span (click)="editPaymentMethod(row)" class="table-icon edit" style="font-size: 1rem; color: var(--primary);">
+                                            <app-icon [iconName]="'edit'" [iconWidth]="15" [iconHeight]="15"></app-icon>
+                                        </span>
+                                        <span (click)="deletePaymentMethod(row)" class="table-icon delete ms-lg-3">
+                                            <i class="bi bi-trash3-fill"></i>
+                                        </span>
+                                    </td>
+                                </ng-container>
+
+                                <ng-container *ngIf="column.key !== 'requiresBankReference' && column.key !== 'requiresChequeNumber' && column.key !== 'requiresAttachment' && column.key !== 'status' && column.key !== 'actions'">
+                                    <th [style.width]="column.columnWidth" mat-header-cell *matHeaderCellDef>{{ column.label }}</th>
+                                    <td mat-cell *matCellDef="let row">
+                                        <div class="major">{{ row[column.key] }}</div>
+                                    </td>
+                                </ng-container>
+
+                            </ng-container>
+
+                            <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+                            <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+                            <tr class="mat-row" *matNoDataRow>
+                                <td class="mat-cell" [attr.colspan]="displayedColumns?.length">
+                                    <app-no-data
+                                        [height]="'12rem'"
+                                        [icon]="'walletCard'"
+                                        [message]="'No payment methods have been configured yet'"
+                                    ></app-no-data>
+                                </td>
+                            </tr>
+
+                        </table>
+                    </div>
+
+                </div>
+            </div>
+
+        </div>
+    </div>
+</div>

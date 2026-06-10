@@ -1,0 +1,15 @@
+<div
+  class="switch-wrap"
+  [class.checked]="checked"
+  [class.disabled]="disabled"
+  [class.label-left]="labelPosition === 'left'"
+  (click)="toggle()"
+>
+  <span *ngIf="label && labelPosition === 'left'" class="switch-label">{{ label }}</span>
+
+  <div class="track">
+    <div class="thumb"></div>
+  </div>
+
+  <span *ngIf="label && labelPosition === 'right'" class="switch-label">{{ label }}</span>
+</div>

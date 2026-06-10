@@ -20,23 +20,18 @@ export class Interceptor implements HttpInterceptor {
     request: HttpRequest<any>,
     next: HttpHandler
   ): Observable<HttpEvent<any>> {
-    // console.log('Intercept called:', request.url);
+    const skipToast = request.headers.has('X-No-Error-Toast');
 
-    // Optional: add Authorization header here
-    request = request.clone({
-      setHeaders: {
-        // Authorization: `Bearer ${yourToken}`
-      }
-    });
+    if (skipToast) {
+      request = request.clone({ headers: request.headers.delete('X-No-Error-Toast') });
+    }
 
     return next.handle(request).pipe(
       catchError((error: HttpErrorResponse) => {
-        // Ignore specific URLs
-        if (error?.url?.includes('ipapi')) {
+        if (error?.url?.includes('ipapi') || skipToast) {
           return throwError(() => error);
         }
 
-        // Handle HTTP error codes
         switch (error.status) {
           case 401:
             this.notificationService.warning('Your session has expired. Please login once again.', 'Session Expired');
@@ -52,7 +47,6 @@ export class Interceptor implements HttpInterceptor {
             console.error(error.error);
         }
 
-        // Propagate error downstream
         return throwError(() => error);
       })
     );

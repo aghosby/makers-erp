@@ -1,0 +1,56 @@
+.balance-grid {
+  .balance-card {
+    flex: 1;
+    min-width: 140px;
+    padding: 1rem 1.25rem;
+    border-radius: 10px;
+    background: var(--background-sub);
+    border: 1px solid var(--border-light);
+
+    .bal-label {
+      font-family: var(--font-regular);
+      font-size: 0.72rem;
+      color: var(--text-sub);
+      margin-bottom: 0.4rem;
+      text-transform: uppercase;
+      letter-spacing: 0.03em;
+    }
+
+    .bal-value {
+      font-family: var(--font-bold);
+      font-size: 1.15rem;
+      color: var(--text-main);
+
+      &.debit   { color: var(--success); }
+      &.credit  { color: var(--danger);  }
+      &.primary { color: var(--primary); }
+    }
+
+    &.highlight {
+      background: var(--primary-lightest);
+      border-color: var(--primary-light);
+    }
+  }
+}
+
+.desc-text {
+  font-family: var(--font-regular);
+  font-size: 0.8rem;
+  color: var(--text-sub);
+  line-height: 1.5;
+}
+
+.item-label {
+  font-family: var(--font-medium);
+  font-size: 0.72rem;
+  color: var(--text-sub);
+  text-transform: uppercase;
+  letter-spacing: 0.03em;
+}
+
+.flags-wrap {
+  .badge-tag {
+    font-family: var(--font-regular);
+    font-size: 0.7rem;
+  }
+}

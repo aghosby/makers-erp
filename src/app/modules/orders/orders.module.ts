@@ -13,12 +13,9 @@ import { CustomerListComponent } from './customers/customer-list/customer-list.c
 import { CustomerInfoComponent } from './customers/customer-info/customer-info.component';
 import { ProductListComponent } from './products/product-list/product-list.component';
 import { ProductInfoComponent } from './products/product-info/product-info.component';
-import { SupplierListComponent } from './suppliers/supplier-list/supplier-list.component';
-import { SupplierInfoComponent } from './suppliers/supplier-info/supplier-info.component';
 import { FreightCarrierListComponent } from './logistics/freight-carrier-list/freight-carrier-list.component';
 import { FreightCarrierInfoComponent } from './logistics/freight-carrier-info/freight-carrier-info.component';
 import { CustomerDetailsComponent } from './customers/customer-details/customer-details.component';
-import { SupplierDetailsComponent } from './suppliers/supplier-details/supplier-details.component';
 import { StockInfoComponent } from './products/stock-info/stock-info.component';
 import { ProductCategoryComponent } from './products/product-category/product-category.component';
 import { ProductDetailsComponent } from './products/product-details/product-details.component';
@@ -27,13 +24,13 @@ import { CustomerSalesComponent } from './customers/customer-sales/customer-sale
 import { ProductOverviewComponent } from './products/product-overview/product-overview.component';
 import { ProductStockHistoryComponent } from './products/product-stock-history/product-stock-history.component';
 import { ProductSalesComponent } from './products/product-sales/product-sales.component';
-import { SupplierOverviewComponent } from './suppliers/supplier-overview/supplier-overview.component';
-import { SupplierOrderHistoryComponent } from './suppliers/supplier-order-history/supplier-order-history.component';
 import { CourierListComponent } from './couriers/courier-list/courier-list.component';
 import { CourierInfoComponent } from './couriers/courier-info/courier-info.component';
 import { CourierOverviewComponent } from './couriers/courier-overview/courier-overview.component';
 import { CourierDetailsComponent } from './couriers/courier-details/courier-details.component';
 import { CourierDeliveryHistoryComponent } from './couriers/courier-delivery-history/courier-delivery-history.component';
+import { OrdersSettingsComponent } from './settings/orders-settings/orders-settings.component';
+import { SharedFeaturesModule } from '../features/shared/shared-features.module';
 
 
 @NgModule({
@@ -47,12 +44,9 @@ import { CourierDeliveryHistoryComponent } from './couriers/courier-delivery-his
     ProductListComponent,
     ProductInfoComponent,
     ProductDetailsComponent,
-    SupplierListComponent,
-    SupplierInfoComponent,
     FreightCarrierListComponent,
     FreightCarrierInfoComponent,
     CustomerDetailsComponent,
-    SupplierDetailsComponent,
     StockInfoComponent,
     ProductCategoryComponent,
     CustomerOverviewComponent,
@@ -60,17 +54,17 @@ import { CourierDeliveryHistoryComponent } from './couriers/courier-delivery-his
     ProductOverviewComponent,
     ProductStockHistoryComponent,
     ProductSalesComponent,
-    SupplierOverviewComponent,
-    SupplierOrderHistoryComponent,
     CourierListComponent,
     CourierInfoComponent,
     CourierOverviewComponent,
     CourierDetailsComponent,
-    CourierDeliveryHistoryComponent
+    CourierDeliveryHistoryComponent,
+    OrdersSettingsComponent
   ],
   imports: [
     CommonModule,
     SharedModule,
+    SharedFeaturesModule,
     NgxGaugeModule,
     NgxChartsModule,
     HighchartsChartModule,

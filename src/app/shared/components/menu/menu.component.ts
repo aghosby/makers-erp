@@ -1,7 +1,7 @@
 import { Component, OnInit, Input } from '@angular/core';
 import { DomSanitizer } from '@angular/platform-browser';
 import { Icons } from '../../../core/constants/icons';
-import { navbarData, navbarDataReg, navbarDataManager, navbarDataAceErp, navbarDataOrders } from '../../../core/constants/nav-data';
+import { navbarData, navbarDataReg, navbarDataManager, navbarDataAceErp, navbarDataOrders, navbarDataAccounting } from '../../../core/constants/nav-data';
 import { AuthenticationService } from '../../services/utils/authentication.service';
 import { NotificationService } from '../../services/utils/notification.service';
 import { ActivatedRoute, NavigationEnd, Router, RoutesRecognized } from '@angular/router';
@@ -21,6 +21,7 @@ export class MenuComponent implements OnInit {
   managerMenuData = navbarDataManager;
   aceerpMenuData = navbarDataAceErp;
   ordersMenuData = navbarDataOrders;
+  accountingMenuData = navbarDataAccounting;
   activeModule:string;
 
   currentLink = 'Human Resources';

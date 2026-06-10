@@ -33,7 +33,8 @@ import { MenuComponent } from './components/menu/menu.component';
 import { HeaderComponent } from './components/header/header.component';
 import { NoDataComponent } from './components/no-data/no-data.component';
 import { ProgressStepperComponent } from './components/progress-stepper/progress-stepper.component';
-import { QuillEditorComponent } from './components/quill-editor/quill-editor.component';
+import { QuillEditorComponent } from './components/form-components/quill-editor/quill-editor.component';
+import { SwitchComponent } from './components/form-components/switch/switch.component';
 import { InfoDialogComponent } from './components/info-dialog/info-dialog.component';
 import { LoadingDataComponent } from './components/loading-data/loading-data.component';
 import { MatPaginator, MatPaginatorModule } from '@angular/material/paginator';
@@ -43,6 +44,9 @@ import { TimeDurationPipe } from './pipes/time-duration.pipe';
 import { LocaleStringPipe } from './pipes/locale-string.pipe';
 import { LocaleDatePipe } from './pipes/locale-date.pipe';
 import { TableFilterComponent } from './components/table-filter/table-filter.component';
+import { DataTableComponent } from './components/data-table/data-table.component';
+import { CellTemplateDirective } from './components/data-table/cell-template.directive';
+import { ModalContainerComponent } from './components/modal/modal-container.component';
 
 const SHARED_COMP = [
   MatIconModule,
@@ -74,7 +78,8 @@ const SHARED_COMP = [
     IconComponent, 
     NoDataComponent, 
     ProgressStepperComponent, 
-    QuillEditorComponent, 
+    QuillEditorComponent,
+    SwitchComponent,
     InfoDialogComponent, 
     LoadingDataComponent, 
     SupportInfoComponent,
@@ -82,7 +87,10 @@ const SHARED_COMP = [
     TimeDurationPipe,
     LocaleStringPipe,
     LocaleDatePipe,
-    TableFilterComponent
+    TableFilterComponent,
+    DataTableComponent,
+    CellTemplateDirective,
+    ModalContainerComponent,
   ],
 
   exports: [
@@ -93,9 +101,12 @@ const SHARED_COMP = [
     NoDataComponent,
     ProgressStepperComponent,
     QuillEditorComponent,
+    SwitchComponent,
     InfoDialogComponent,
     LoadingDataComponent,
     TableFilterComponent,
+    DataTableComponent,
+    CellTemplateDirective,
     TruncateWordsPipe,
     TimeDurationPipe,
     LocaleStringPipe,

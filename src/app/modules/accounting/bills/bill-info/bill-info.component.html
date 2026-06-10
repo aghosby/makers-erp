@@ -1,0 +1,155 @@
+<form [formGroup]="billForm">
+
+    <!-- Row 1: Bill #, Vendor, Category -->
+    <div class="header-fields">
+        <mat-form-field appearance="outline" class="field-sm">
+            <mat-label>Bill #</mat-label>
+            <input matInput formControlName="billNumber" readonly>
+        </mat-form-field>
+
+        <mat-form-field appearance="outline" class="field-lg">
+            <mat-label>Vendor / Supplier</mat-label>
+            <input matInput formControlName="vendor" placeholder="Vendor name">
+            <mat-error *ngIf="billForm.get('vendor')?.hasError('required')">Vendor is required</mat-error>
+        </mat-form-field>
+
+        <mat-form-field appearance="outline" class="field-md">
+            <mat-label>Category</mat-label>
+            <mat-select formControlName="category" disableOptionCentering panelClass="matDropdown">
+                <mat-option *ngFor="let c of categories" [value]="c">{{ c }}</mat-option>
+            </mat-select>
+        </mat-form-field>
+    </div>
+
+    <!-- Row 2: Date, Due Date, Tax Rate -->
+    <div class="header-fields">
+        <mat-form-field appearance="outline" class="field-md">
+            <mat-label>Bill Date</mat-label>
+            <input matInput type="date" formControlName="date">
+            <mat-error *ngIf="billForm.get('date')?.hasError('required')">Date is required</mat-error>
+        </mat-form-field>
+
+        <mat-form-field appearance="outline" class="field-md">
+            <mat-label>Due Date</mat-label>
+            <input matInput type="date" formControlName="dueDate">
+            <mat-error *ngIf="billForm.get('dueDate')?.hasError('required')">Due date is required</mat-error>
+        </mat-form-field>
+
+        <mat-form-field appearance="outline" class="field-sm">
+            <mat-label>Tax Rate (%)</mat-label>
+            <input matInput type="number" formControlName="taxRate" min="0" max="100">
+        </mat-form-field>
+    </div>
+
+    <!-- Description -->
+    <mat-form-field appearance="outline" class="w-100">
+        <mat-label>Description (optional)</mat-label>
+        <input matInput formControlName="description" placeholder="Brief description of the expense">
+    </mat-form-field>
+
+    <!-- Line items table -->
+    <div class="lines-table">
+        <div class="lines-head">
+            <div class="col-desc">Description</div>
+            <div class="col-num">Qty</div>
+            <div class="col-num">Unit Price</div>
+            <div class="col-num">Amount</div>
+            <div class="col-del"></div>
+        </div>
+
+        <div formArrayName="lines">
+            <div *ngFor="let line of lines.controls; let i = index"
+                 [formGroupName]="i" class="line-row">
+                <div class="col-desc">
+                    <input type="text" formControlName="description" class="line-input" placeholder="Item or service description">
+                </div>
+                <div class="col-num">
+                    <input type="number" formControlName="quantity" class="line-input text-end" placeholder="0" min="0">
+                </div>
+                <div class="col-num">
+                    <input type="number" formControlName="unitPrice" class="line-input text-end" placeholder="0" min="0">
+                </div>
+                <div class="col-num amount-cell">
+                    {{ currency }}{{ getLineAmount(i) | number:'1.0-0' }}
+                </div>
+                <div class="col-del">
+                    <span *ngIf="lines.length > 1" class="del-btn" (click)="removeLine(i)">
+                        <i class="bi bi-x"></i>
+                    </span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Totals -->
+        <div class="totals-section">
+            <div class="totals-row">
+                <span class="totals-label">Subtotal</span>
+                <span class="totals-value">{{ currency }}{{ subtotal | number:'1.0-0' }}</span>
+            </div>
+            <div class="totals-row">
+                <span class="totals-label">Tax ({{ billForm.get('taxRate')?.value || 0 }}%)</span>
+                <span class="totals-value">{{ currency }}{{ taxAmount | number:'1.0-0' }}</span>
+            </div>
+            <div class="totals-row total-final">
+                <span class="totals-label">Total</span>
+                <span class="totals-value">{{ currency }}{{ total | number:'1.0-0' }}</span>
+            </div>
+        </div>
+    </div>
+
+    <!-- Add line -->
+    <div class="mt-3 d-flex justify-content-between align-items-center">
+        <span class="add-line-btn" (click)="addLine()">+ Add line</span>
+    </div>
+
+    <!-- Approval + Attachment row -->
+    <div class="extra-row">
+        <!-- Requires Approval toggle -->
+        <div class="approval-toggle">
+            <label class="toggle-label">
+                <input type="checkbox" formControlName="requiresApproval" class="toggle-input">
+                <span class="toggle-track">
+                    <span class="toggle-thumb"></span>
+                </span>
+                <span class="toggle-text">Requires Approval</span>
+            </label>
+            <div class="toggle-hint" *ngIf="billForm.get('requiresApproval')?.value">
+                <i class="bi bi-info-circle me-1"></i>Bill will be sent for approval before payment
+            </div>
+        </div>
+
+        <!-- Attachment -->
+        <div class="attachment-section">
+            <input type="file" #fileInput class="d-none" (change)="onFileSelected($event)"
+                   accept=".pdf,.jpg,.jpeg,.png,.doc,.docx,.xlsx">
+            <div *ngIf="!attachmentLabel" class="attach-btn" (click)="fileInput.click()">
+                <i class="bi bi-paperclip me-2"></i>Attach a file
+            </div>
+            <div *ngIf="attachmentLabel" class="attach-preview">
+                <i class="bi bi-file-earmark-text me-2"></i>
+                <span class="attach-name">{{ attachmentLabel }}</span>
+                <span class="attach-remove ms-2" (click)="removeAttachment()" title="Remove">
+                    <i class="bi bi-x-circle"></i>
+                </span>
+            </div>
+        </div>
+    </div>
+
+    <!-- Notes -->
+    <mat-form-field appearance="outline" class="w-100 mt-2">
+        <mat-label>Notes (optional)</mat-label>
+        <textarea matInput rows="2" formControlName="notes" placeholder="Payment instructions, reference numbers, etc."></textarea>
+    </mat-form-field>
+
+    <!-- Actions -->
+    <div class="d-flex justify-content-end gap-3 mt-2">
+        <div (click)="dismiss()" class="cta trans-bkg mmd">Cancel</div>
+        <div (click)="onSubmit(true)" class="cta outline-bkg mmd" [class.btn-disabled]="apiLoading">
+            Save as Draft
+        </div>
+        <div (click)="onSubmit(false)" class="cta primary-bkg mmd" [class.btn-disabled]="apiLoading">
+            Submit Bill <span *ngIf="apiLoading" class="loader ms-1"></span>
+        </div>
+    </div>
+
+</form>

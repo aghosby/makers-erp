@@ -1,0 +1,92 @@
+<form [formGroup]="journalForm">
+
+    <!-- Header fields: Date, Entity, Description -->
+    <div class="header-fields">
+        <mat-form-field appearance="outline" class="field-date">
+            <mat-label>Date</mat-label>
+            <input matInput type="date" formControlName="date">
+        </mat-form-field>
+
+        <mat-form-field appearance="outline" class="field-entity">
+            <mat-label>Entity</mat-label>
+            <mat-select formControlName="entity" disableOptionCentering panelClass="matDropdown">
+                <mat-option *ngFor="let e of data.entities" [value]="e">{{ e }}</mat-option>
+            </mat-select>
+        </mat-form-field>
+
+        <mat-form-field appearance="outline" class="field-description">
+            <mat-label>Description</mat-label>
+            <input matInput formControlName="description" placeholder="e.g. Accrual for Q4">
+        </mat-form-field>
+    </div>
+
+    <!-- Line items table -->
+    <div class="lines-table">
+        <div class="lines-head">
+            <div class="col-acct">Account</div>
+            <div class="col-num">Debit</div>
+            <div class="col-num">Credit</div>
+            <div class="col-del"></div>
+        </div>
+
+        <div formArrayName="lines">
+            <div *ngFor="let line of lines.controls; let i = index"
+                 [formGroupName]="i" class="line-row">
+                <div class="col-acct">
+                    <mat-select
+                        formControlName="accountId"
+                        placeholder="Select account..."
+                        disableOptionCentering
+                        panelClass="matDropdown"
+                        class="line-select"
+                    >
+                        <mat-option *ngFor="let acc of data.accounts" [value]="acc._id">
+                            {{ acc.code }} — {{ acc.name }}
+                        </mat-option>
+                    </mat-select>
+                </div>
+                <div class="col-num">
+                    <input type="number" formControlName="debit" class="line-input" placeholder="0" min="0">
+                </div>
+                <div class="col-num">
+                    <input type="number" formControlName="credit" class="line-input" placeholder="0" min="0">
+                </div>
+                <div class="col-del">
+                    <span *ngIf="lines.length > 2" class="del-btn" (click)="removeLine(i)">
+                        <i class="bi bi-x"></i>
+                    </span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Totals row -->
+        <div class="totals-row">
+            <div class="col-acct">Totals</div>
+            <div class="col-num">
+                <span [class.text-success]="debitTotal > 0">{{ currency }}{{ debitTotal | number:'1.0-0' }}</span>
+            </div>
+            <div class="col-num">
+                <span [class.text-danger]="creditTotal > 0">{{ currency }}{{ creditTotal | number:'1.0-0' }}</span>
+            </div>
+            <div class="col-del"></div>
+        </div>
+    </div>
+
+    <!-- Add line + balance status -->
+    <div class="d-flex justify-content-between align-items-center mt-3">
+        <span class="add-line-btn" (click)="addLine()">+ Add line</span>
+        <span class="balance-status" [class.balanced]="isBalanced" [class.unbalanced]="!isBalanced">
+            <ng-container *ngIf="isBalanced">Balanced ✓</ng-container>
+            <ng-container *ngIf="!isBalanced">Out of balance by {{ currency }}{{ imbalance | number:'1.0-0' }}</ng-container>
+        </span>
+    </div>
+
+    <!-- Action buttons -->
+    <div class="d-flex justify-content-end gap-3 mt-4">
+        <div (click)="dismiss()" class="cta trans-bkg mmd">Cancel</div>
+        <div (click)="onSubmit()" class="cta primary-bkg mmd" [class.btn-disabled]="!isBalanced || apiLoading">
+            Post entry <span *ngIf="apiLoading" class="loader ms-1"></span>
+        </div>
+    </div>
+
+</form>

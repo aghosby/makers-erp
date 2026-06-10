@@ -1,0 +1,24 @@
+.status-summary {
+    height: 8.5rem;
+}
+
+.actions-info {
+    .dropdown-trigger {
+        width: 12rem;
+        display: inline-flex;
+        justify-content: space-between;
+        align-items: center;
+        font-size: 0.75rem;
+        letter-spacing: 0.03rem;
+        padding: 0.35rem 0.7rem;
+        border-radius: var(--radius-xs);
+        transition: var(--transition-norm);
+        border: 1px solid var(--border-black-lightest);
+        box-shadow: var(--card-shadow);
+        cursor: pointer;
+
+        i {
+            margin-left: 0.6rem;
+        }
+    }
+}

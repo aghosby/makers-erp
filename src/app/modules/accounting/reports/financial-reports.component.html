@@ -1,0 +1,384 @@
+<div class="content-wrap">
+
+  <!-- Header -->
+  <div class="row-section d-flex justify-content-between align-items-center">
+    <div class="page-header">Financial Reports</div>
+    <div class="main-actions">
+      <div class="cta trans-bkg icon md" [class.disabled]="!isGenerated" (click)="isGenerated && downloadCSV()">
+        <span class="icon">
+          <app-icon iconName="download" iconWidth="18" iconHeight="18"></app-icon>
+        </span>
+        Download CSV
+      </div>
+    </div>
+  </div>
+
+  <!-- Tabs + Filters -->
+  <div class="row-section my-lg-3">
+
+    <!-- Tab Row -->
+    <div class="report-tabs">
+      <button
+        *ngFor="let tab of reportTabs"
+        class="report-tab"
+        [class.active]="selectedTab === tab.id"
+        (click)="selectTab(tab.id)">
+        {{ tab.label }}
+      </button>
+    </div>
+
+    <!-- Filter Bar -->
+    <div class="filter-bar d-flex align-items-center flex-wrap">
+
+      <ng-container *ngIf="showDateRange">
+        <mat-form-field appearance="outline" class="filter-field">
+          <mat-label>From</mat-label>
+          <input matInput [matDatepicker]="fromPicker" [(ngModel)]="filterDateFrom">
+          <mat-datepicker-toggle matSuffix [for]="fromPicker"></mat-datepicker-toggle>
+          <mat-datepicker #fromPicker></mat-datepicker>
+        </mat-form-field>
+
+        <mat-form-field appearance="outline" class="filter-field">
+          <mat-label>To</mat-label>
+          <input matInput [matDatepicker]="toPicker" [(ngModel)]="filterDateTo">
+          <mat-datepicker-toggle matSuffix [for]="toPicker"></mat-datepicker-toggle>
+          <mat-datepicker #toPicker></mat-datepicker>
+        </mat-form-field>
+      </ng-container>
+
+      <ng-container *ngIf="showAsOfDate">
+        <mat-form-field appearance="outline" class="filter-field">
+          <mat-label>As of Date</mat-label>
+          <input matInput [matDatepicker]="asOfPicker" [(ngModel)]="filterAsOfDate">
+          <mat-datepicker-toggle matSuffix [for]="asOfPicker"></mat-datepicker-toggle>
+          <mat-datepicker #asOfPicker></mat-datepicker>
+        </mat-form-field>
+      </ng-container>
+
+      <mat-form-field appearance="outline" class="filter-field">
+        <mat-label>Entity</mat-label>
+        <mat-select [(ngModel)]="filterEntity" disableOptionCentering panelClass="matDropdown">
+          <mat-option *ngFor="let e of entities" [value]="e">{{ e }}</mat-option>
+        </mat-select>
+      </mat-form-field>
+
+      <ng-container *ngIf="selectedTab === 'trial-balance'">
+        <mat-form-field appearance="outline" class="filter-field">
+          <mat-label>Account Type</mat-label>
+          <mat-select [(ngModel)]="filterAccountType" disableOptionCentering panelClass="matDropdown">
+            <mat-option value="">All Types</mat-option>
+            <mat-option value="Asset">Asset</mat-option>
+            <mat-option value="Liability">Liability</mat-option>
+            <mat-option value="Equity">Equity</mat-option>
+            <mat-option value="Revenue">Revenue</mat-option>
+            <mat-option value="Expense">Expense</mat-option>
+          </mat-select>
+        </mat-form-field>
+      </ng-container>
+
+      <ng-container *ngIf="selectedTab === 'audit-trail'">
+        <mat-form-field appearance="outline" class="filter-field">
+          <mat-label>Action Type</mat-label>
+          <mat-select [(ngModel)]="filterActionType" disableOptionCentering panelClass="matDropdown">
+            <mat-option value="">All Actions</mat-option>
+            <mat-option value="CREATE">CREATE</mat-option>
+            <mat-option value="UPDATE">UPDATE</mat-option>
+            <mat-option value="DELETE">DELETE</mat-option>
+            <mat-option value="APPROVE">APPROVE</mat-option>
+            <mat-option value="REJECT">REJECT</mat-option>
+            <mat-option value="PAID">PAID</mat-option>
+          </mat-select>
+        </mat-form-field>
+      </ng-container>
+
+      <div (click)="generateReport()" class="cta primary-bkg icon md generate-btn">
+        <span class="icon">
+          <app-icon iconName="chartColumn" iconWidth="18" iconHeight="18"></app-icon>
+        </span>
+        Generate Report
+      </div>
+
+    </div>
+  </div>
+
+  <!-- Report Body -->
+  <div class="row-section mb-lg-4">
+    <div class="report-body">
+
+      <!-- Loading -->
+      <div class="report-loading" *ngIf="isLoading">
+        <div class="spinner"></div>
+        <p>Generating report...</p>
+      </div>
+
+      <!-- Empty state -->
+      <div class="report-empty" *ngIf="!isLoading && !isGenerated">
+        <app-icon iconName="chartColumn" iconWidth="52" iconHeight="52"></app-icon>
+        <h3>No report generated</h3>
+        <p>Set your filters and click <strong>Generate Report</strong> to view the {{ currentReportLabel }}</p>
+      </div>
+
+      <!-- ── PROFIT & LOSS ────────────────────────────────────── -->
+      <div class="statement-report" *ngIf="!isLoading && isGenerated && selectedTab === 'profit-loss'">
+        <div class="report-title-bar">
+          <h3>Profit & Loss Statement</h3>
+          <span class="report-period">{{ filterDateFrom | date:'mediumDate' }} — {{ filterDateTo | date:'mediumDate' }} &nbsp;·&nbsp; {{ filterEntity }}</span>
+        </div>
+        <div class="statement-lines">
+          <div *ngFor="let row of plData"
+               class="statement-line"
+               [class.line-header]="row.isHeader"
+               [class.line-subtotal]="row.isSubtotal"
+               [class.line-total]="row.isTotal"
+               [class.line-indent-1]="row.indent === 1"
+               [class.line-negative]="row.negative">
+            <span class="line-label">{{ row.label }}</span>
+            <span class="line-amount" *ngIf="row.amount !== undefined">
+              <ng-container *ngIf="row.negative">({{ currency }}{{ row.amount | number }})</ng-container>
+              <ng-container *ngIf="!row.negative">{{ currency }}{{ row.amount | number }}</ng-container>
+            </span>
+          </div>
+        </div>
+      </div>
+
+      <!-- ── BALANCE SHEET ───────────────────────────────────── -->
+      <div class="statement-report" *ngIf="!isLoading && isGenerated && selectedTab === 'balance-sheet'">
+        <div class="report-title-bar">
+          <h3>Balance Sheet</h3>
+          <span class="report-period">As of {{ filterAsOfDate | date:'mediumDate' }} &nbsp;·&nbsp; {{ filterEntity }}</span>
+        </div>
+        <div class="balance-sheet-grid">
+          <div class="bs-column">
+            <div class="bs-column-title">Assets</div>
+            <div class="statement-lines">
+              <div *ngFor="let row of bsAssets"
+                   class="statement-line"
+                   [class.line-header]="row.isHeader"
+                   [class.line-subtotal]="row.isSubtotal"
+                   [class.line-total]="row.isTotal"
+                   [class.line-indent-1]="row.indent === 1"
+                   [class.line-negative]="row.negative">
+                <span class="line-label">{{ row.label }}</span>
+                <span class="line-amount" *ngIf="row.amount !== undefined">
+                  <ng-container *ngIf="row.negative">({{ currency }}{{ row.amount | number }})</ng-container>
+                  <ng-container *ngIf="!row.negative">{{ currency }}{{ row.amount | number }}</ng-container>
+                </span>
+              </div>
+            </div>
+          </div>
+          <div class="bs-column">
+            <div class="bs-column-title">Liabilities & Equity</div>
+            <div class="statement-lines">
+              <div *ngFor="let row of bsLiabilitiesEquity"
+                   class="statement-line"
+                   [class.line-header]="row.isHeader"
+                   [class.line-subtotal]="row.isSubtotal"
+                   [class.line-total]="row.isTotal"
+                   [class.line-indent-1]="row.indent === 1"
+                   [class.line-negative]="row.negative">
+                <span class="line-label">{{ row.label }}</span>
+                <span class="line-amount" *ngIf="row.amount !== undefined">
+                  <ng-container *ngIf="row.negative">({{ currency }}{{ row.amount | number }})</ng-container>
+                  <ng-container *ngIf="!row.negative">{{ currency }}{{ row.amount | number }}</ng-container>
+                </span>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="bs-balance-check" [class.balanced]="totalAssets === totalLiabilitiesEquity">
+          <app-icon *ngIf="totalAssets === totalLiabilitiesEquity" iconName="checkCircle" iconWidth="16" iconHeight="16"></app-icon>
+          <app-icon *ngIf="totalAssets !== totalLiabilitiesEquity" iconName="alertCircle" iconWidth="16" iconHeight="16"></app-icon>
+          <span *ngIf="totalAssets === totalLiabilitiesEquity">Balance sheet is balanced — Total Assets = Total Liabilities & Equity ({{ currency }}{{ totalAssets | number }})</span>
+          <span *ngIf="totalAssets !== totalLiabilitiesEquity">Balance sheet is out of balance — Assets: {{ currency }}{{ totalAssets | number }} vs L+E: {{ currency }}{{ totalLiabilitiesEquity | number }}</span>
+        </div>
+      </div>
+
+      <!-- ── TRIAL BALANCE ──────────────────────────────────── -->
+      <div class="table-report" *ngIf="!isLoading && isGenerated && selectedTab === 'trial-balance'">
+        <div class="report-title-bar">
+          <h3>Trial Balance</h3>
+          <span class="report-period">{{ filterDateFrom | date:'mediumDate' }} — {{ filterDateTo | date:'mediumDate' }} &nbsp;·&nbsp; {{ filterEntity }}</span>
+        </div>
+        <table class="report-table">
+          <thead>
+            <tr>
+              <th>Code</th>
+              <th>Account Name</th>
+              <th>Type</th>
+              <th class="text-right">Debit ({{ currency }})</th>
+              <th class="text-right">Credit ({{ currency }})</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let row of trialBalanceData">
+              <td class="code-cell">{{ row.code }}</td>
+              <td>{{ row.name }}</td>
+              <td><span class="account-type-badge type-{{ row.type | lowercase }}">{{ row.type }}</span></td>
+              <td class="text-right amount-cell">{{ row.debit ? (currency + (row.debit | number)) : '—' }}</td>
+              <td class="text-right amount-cell">{{ row.credit ? (currency + (row.credit | number)) : '—' }}</td>
+            </tr>
+          </tbody>
+          <tfoot>
+            <tr class="totals-row">
+              <td colspan="3">TOTALS</td>
+              <td class="text-right amount-cell">{{ currency }}{{ trialDebitTotal | number }}</td>
+              <td class="text-right amount-cell">{{ currency }}{{ trialCreditTotal | number }}</td>
+            </tr>
+            <tr class="balance-check-row" [class.balanced]="trialDebitTotal === trialCreditTotal">
+              <td colspan="5">
+                <app-icon *ngIf="trialDebitTotal === trialCreditTotal" iconName="checkCircle" iconWidth="14" iconHeight="14"></app-icon>
+                <app-icon *ngIf="trialDebitTotal !== trialCreditTotal" iconName="alertCircle" iconWidth="14" iconHeight="14"></app-icon>
+                {{ trialDebitTotal === trialCreditTotal ? 'Debits equal Credits — Trial Balance is balanced' : 'Debits and Credits do not match' }}
+              </td>
+            </tr>
+          </tfoot>
+        </table>
+      </div>
+
+      <!-- ── CASH FLOW ──────────────────────────────────────── -->
+      <div class="statement-report" *ngIf="!isLoading && isGenerated && selectedTab === 'cash-flow'">
+        <div class="report-title-bar">
+          <h3>Cash Flow Statement</h3>
+          <span class="report-period">{{ filterDateFrom | date:'mediumDate' }} — {{ filterDateTo | date:'mediumDate' }} &nbsp;·&nbsp; {{ filterEntity }}</span>
+        </div>
+        <div class="statement-lines">
+          <div *ngFor="let row of cashFlowData"
+               class="statement-line"
+               [class.line-header]="row.isHeader"
+               [class.line-subtotal]="row.isSubtotal"
+               [class.line-total]="row.isTotal"
+               [class.line-indent-1]="row.indent === 1"
+               [class.line-negative]="row.negative || (row.amount !== undefined && row.amount < 0)">
+            <span class="line-label">{{ row.label }}</span>
+            <span class="line-amount" *ngIf="row.amount !== undefined">
+              <ng-container *ngIf="row.negative || $any(row.amount) < 0">({{ currency }}{{ ($any(row.amount) < 0 ? -$any(row.amount) : $any(row.amount)) | number }})</ng-container>
+              <ng-container *ngIf="!row.negative && $any(row.amount) >= 0">{{ currency }}{{ row.amount | number }}</ng-container>
+            </span>
+          </div>
+        </div>
+      </div>
+
+      <!-- ── A/R AGING ──────────────────────────────────────── -->
+      <div class="table-report" *ngIf="!isLoading && isGenerated && selectedTab === 'ar-aging'">
+        <div class="report-title-bar">
+          <h3>Accounts Receivable Aging</h3>
+          <span class="report-period">As of {{ filterAsOfDate | date:'mediumDate' }} &nbsp;·&nbsp; {{ filterEntity }}</span>
+        </div>
+        <table class="report-table aging-table">
+          <thead>
+            <tr>
+              <th>Customer</th>
+              <th class="text-right">Current</th>
+              <th class="text-right">1–30 Days</th>
+              <th class="text-right warn-col">31–60 Days</th>
+              <th class="text-right warn-col">61–90 Days</th>
+              <th class="text-right danger-col">Over 90 Days</th>
+              <th class="text-right">Total</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let row of arAgingData">
+              <td>{{ row.customer }}</td>
+              <td class="text-right amount-cell">{{ row.current ? (currency + (row.current | number)) : '—' }}</td>
+              <td class="text-right amount-cell">{{ row.d30 ? (currency + (row.d30 | number)) : '—' }}</td>
+              <td class="text-right amount-cell warn-col">{{ row.d60 ? (currency + (row.d60 | number)) : '—' }}</td>
+              <td class="text-right amount-cell warn-col">{{ row.d90 ? (currency + (row.d90 | number)) : '—' }}</td>
+              <td class="text-right amount-cell danger-col">{{ row.over90 ? (currency + (row.over90 | number)) : '—' }}</td>
+              <td class="text-right amount-cell total-col">{{ row.total ? (currency + (row.total | number)) : '—' }}</td>
+            </tr>
+          </tbody>
+          <tfoot>
+            <tr class="totals-row">
+              <td>TOTALS</td>
+              <td class="text-right">{{ arAgingTotals.current ? (currency + (arAgingTotals.current | number)) : '—' }}</td>
+              <td class="text-right">{{ arAgingTotals.d30 ? (currency + (arAgingTotals.d30 | number)) : '—' }}</td>
+              <td class="text-right warn-col">{{ arAgingTotals.d60 ? (currency + (arAgingTotals.d60 | number)) : '—' }}</td>
+              <td class="text-right warn-col">{{ arAgingTotals.d90 ? (currency + (arAgingTotals.d90 | number)) : '—' }}</td>
+              <td class="text-right danger-col">{{ arAgingTotals.over90 ? (currency + (arAgingTotals.over90 | number)) : '—' }}</td>
+              <td class="text-right total-col">{{ currency }}{{ arAgingTotals.total | number }}</td>
+            </tr>
+          </tfoot>
+        </table>
+      </div>
+
+      <!-- ── A/P AGING ──────────────────────────────────────── -->
+      <div class="table-report" *ngIf="!isLoading && isGenerated && selectedTab === 'ap-aging'">
+        <div class="report-title-bar">
+          <h3>Accounts Payable Aging</h3>
+          <span class="report-period">As of {{ filterAsOfDate | date:'mediumDate' }} &nbsp;·&nbsp; {{ filterEntity }}</span>
+        </div>
+        <table class="report-table aging-table">
+          <thead>
+            <tr>
+              <th>Vendor</th>
+              <th class="text-right">Current</th>
+              <th class="text-right">1–30 Days</th>
+              <th class="text-right warn-col">31–60 Days</th>
+              <th class="text-right warn-col">61–90 Days</th>
+              <th class="text-right danger-col">Over 90 Days</th>
+              <th class="text-right">Total</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let row of apAgingData">
+              <td>{{ row.vendor }}</td>
+              <td class="text-right amount-cell">{{ row.current ? (currency + (row.current | number)) : '—' }}</td>
+              <td class="text-right amount-cell">{{ row.d30 ? (currency + (row.d30 | number)) : '—' }}</td>
+              <td class="text-right amount-cell warn-col">{{ row.d60 ? (currency + (row.d60 | number)) : '—' }}</td>
+              <td class="text-right amount-cell warn-col">{{ row.d90 ? (currency + (row.d90 | number)) : '—' }}</td>
+              <td class="text-right amount-cell danger-col">{{ row.over90 ? (currency + (row.over90 | number)) : '—' }}</td>
+              <td class="text-right amount-cell total-col">{{ row.total ? (currency + (row.total | number)) : '—' }}</td>
+            </tr>
+          </tbody>
+          <tfoot>
+            <tr class="totals-row">
+              <td>TOTALS</td>
+              <td class="text-right">{{ apAgingTotals.current ? (currency + (apAgingTotals.current | number)) : '—' }}</td>
+              <td class="text-right">{{ apAgingTotals.d30 ? (currency + (apAgingTotals.d30 | number)) : '—' }}</td>
+              <td class="text-right warn-col">{{ apAgingTotals.d60 ? (currency + (apAgingTotals.d60 | number)) : '—' }}</td>
+              <td class="text-right warn-col">{{ apAgingTotals.d90 ? (currency + (apAgingTotals.d90 | number)) : '—' }}</td>
+              <td class="text-right danger-col">{{ apAgingTotals.over90 ? (currency + (apAgingTotals.over90 | number)) : '—' }}</td>
+              <td class="text-right total-col">{{ currency }}{{ apAgingTotals.total | number }}</td>
+            </tr>
+          </tfoot>
+        </table>
+      </div>
+
+      <!-- ── AUDIT TRAIL ────────────────────────────────────── -->
+      <div class="table-report" *ngIf="!isLoading && isGenerated && selectedTab === 'audit-trail'">
+        <div class="report-title-bar">
+          <h3>Audit Trail</h3>
+          <span class="report-period">{{ filterDateFrom | date:'mediumDate' }} — {{ filterDateTo | date:'mediumDate' }} &nbsp;·&nbsp; {{ filterEntity }}</span>
+        </div>
+        <table class="report-table audit-table">
+          <thead>
+            <tr>
+              <th>Timestamp</th>
+              <th>User</th>
+              <th>Action</th>
+              <th>Entity</th>
+              <th>Reference</th>
+              <th>Description</th>
+              <th class="text-right">Amount ({{ currency }})</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let row of auditTrailData">
+              <td class="ts-cell">{{ row.ts | date:'dd MMM yyyy, HH:mm' }}</td>
+              <td class="user-cell">{{ row.user }}</td>
+              <td>
+                <span class="status sm" [ngClass]="getActionClass(row.action)">{{ row.action }}</span>
+              </td>
+              <td>{{ row.entity }}</td>
+              <td class="ref-cell">{{ row.ref }}</td>
+              <td class="desc-cell">{{ row.desc }}</td>
+              <td class="text-right amount-cell">{{ row.amount ? (currency + (row.amount | number)) : '—' }}</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+    </div>
+  </div>
+
+</div>

@@ -1,0 +1,123 @@
+<div class="content-wrap">
+
+    <div class="row-section d-flex justify-content-between align-items-center">
+        <div class="page-header">General Ledger</div>
+        <div class="main-actions d-flex justify-content-start align-items-center">
+            <div class="actions-info mat-menu-select">
+                <div [matMenuTriggerFor]="branchMenu" class="dropdown-trigger">
+                    {{ selectedBranch }} <i class="bi bi-chevron-down"></i>
+                </div>
+                <mat-menu #branchMenu="matMenu" class="more">
+                    <div class="menu-item" mat-menu-item (click)="selectBranch('All Branches')">All Branches</div>
+                    <div *ngFor="let b of branchList" class="menu-item" mat-menu-item (click)="selectBranch(b)">{{ b }}</div>
+                </mat-menu>
+            </div>
+        </div>
+    </div>
+
+    <div class="row-section my-lg-4">
+        <div class="row-card w-100 d-flex justify-content-between align-items-start status-summary">
+            <div class="col-card card-xmmd-col4 card-yxl d-flex justify-content-between">
+                <div class="cont status-card card-xmmd card-yxl d-flex flex-column justify-content-between">
+                    <div class="card-det d-flex align-items-center">
+                        <div class="symbol">
+                            <span class="icon">
+                                <app-icon [iconName]="'chartColumn'" [iconWidth]="'40'" [iconHeight]="'40'"></app-icon>
+                            </span>
+                        </div>
+                        <div class="card-title reg">Total Debits</div>
+                    </div>
+                    <div class="card-det d-flex justify-content-between align-items mt-lg-1">
+                        <span class="value">{{ currency }}{{ totalDebits | number:'1.2-2' }}</span>
+                    </div>
+                </div>
+
+                <div class="cont status-card card-xmmd card-yxl d-flex flex-column justify-content-between">
+                    <div class="card-det d-flex align-items-center">
+                        <div class="symbol">
+                            <span class="icon">
+                                <app-icon [iconName]="'cash'" [iconWidth]="'40'" [iconHeight]="'40'"></app-icon>
+                            </span>
+                        </div>
+                        <div class="card-title reg">Total Credits</div>
+                    </div>
+                    <div class="card-det d-flex justify-content-between align-items mt-lg-1">
+                        <span class="value">{{ currency }}{{ totalCredits | number:'1.2-2' }}</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-card card-xmmd-col4 card-yxl d-flex justify-content-between">
+                <div class="cont status-card card-xmmd card-yxl d-flex flex-column justify-content-between">
+                    <div class="card-det d-flex align-items-center">
+                        <div class="symbol">
+                            <span class="icon">
+                                <app-icon [iconName]="'wallet'" [iconWidth]="'40'" [iconHeight]="'40'"></app-icon>
+                            </span>
+                        </div>
+                        <div class="card-title reg">Net Balance</div>
+                    </div>
+                    <div class="card-det d-flex justify-content-between align-items mt-lg-1">
+                        <span class="value">{{ currency }}{{ netBalance | number:'1.2-2' }}</span>
+                    </div>
+                </div>
+
+                <div class="cont status-card card-xmmd card-yxl d-flex flex-column justify-content-between">
+                    <div class="card-det d-flex align-items-center">
+                        <div class="symbol">
+                            <span class="icon">
+                                <app-icon [iconName]="'register'" [iconWidth]="'40'" [iconHeight]="'40'"></app-icon>
+                            </span>
+                        </div>
+                        <div class="card-title reg">Transactions</div>
+                    </div>
+                    <div class="card-det d-flex justify-content-between align-items mt-lg-1">
+                        <span class="value">{{ transactionCount }}</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row-section my-lg-4">
+        <app-data-table
+            [columns]="tableColumns"
+            [data]="filteredEntries"
+            [totalItems]="filteredEntries.length"
+            [isLoading]="isLoading"
+            [filters]="ledgerFilters"
+            [searchPlaceholder]="'Search by account, reference or description'"
+            [emptyIcon]="'register'"
+            [emptyMessage]="'No ledger entries found'"
+            (filtersChange)="onFiltersChange($event)"
+        >
+
+            <ng-template appCellTemplate="date" let-row>
+                <span class="major">{{ row.date | date:'d MMM, y' }}</span>
+            </ng-template>
+
+            <ng-template appCellTemplate="accountName" let-row>
+                <div class="major">{{ row.accountName }}</div>
+                <div class="minor mt-1">{{ row.accountCode }}</div>
+            </ng-template>
+
+            <ng-template appCellTemplate="transactionType" let-row>
+                <span class="badge-tag alt">{{ row.transactionType }}</span>
+            </ng-template>
+
+            <ng-template appCellTemplate="debit" let-row>
+                <span class="major" [class.text-success]="row.debit > 0">
+                    {{ row.debit > 0 ? (row.debit | number:'1.2-2') : '—' }}
+                </span>
+            </ng-template>
+
+            <ng-template appCellTemplate="credit" let-row>
+                <span class="major" [class.text-danger]="row.credit > 0">
+                    {{ row.credit > 0 ? (row.credit | number:'1.2-2') : '—' }}
+                </span>
+            </ng-template>
+
+        </app-data-table>
+    </div>
+
+</div>

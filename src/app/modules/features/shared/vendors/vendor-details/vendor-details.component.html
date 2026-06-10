@@ -1,0 +1,71 @@
+<div class="content-wrap details-list">
+
+    <div *ngIf="isLoading" class="row-section w-100">
+        <app-loading-data [height]="'10rem'"></app-loading-data>
+    </div>
+
+    <div *ngIf="!isLoading">
+        <div class="row-section">
+            <div class="row-card w-100 card-xlg card-yxl">
+                <div class="inner-row w-100 d-flex justify-content-between align-items-center">
+                    <div class="card-title md">Vendor Information</div>
+                </div>
+            </div>
+        </div>
+
+        <div class="row-section" *ngIf="vendorDetails">
+            <div class="info-list space mt-lg-3">
+
+                <div class="info tri">
+                    <span class="label">Contact Person:</span>
+                    <span class="text">{{ vendorDetails.contactPersonName || '—' }}</span>
+                </div>
+
+                <div class="info duo">
+                    <span class="label">Phone Number:</span>
+                    <span class="text">{{ vendorDetails.phone || '—' }}</span>
+                </div>
+
+                <div class="info tri">
+                    <span class="label">Email:</span>
+                    <span class="text">{{ vendorDetails.email || '—' }}</span>
+                </div>
+
+                <div class="info tri">
+                    <span class="label">City:</span>
+                    <span class="text">{{ vendorDetails.address?.city || '—' }}</span>
+                </div>
+
+                <div class="info tri">
+                    <span class="label">State:</span>
+                    <span class="text">{{ vendorDetails.address?.state || '—' }}</span>
+                </div>
+
+                <div class="info tri">
+                    <span class="label">Country:</span>
+                    <span class="text">{{ vendorDetails.address?.country || '—' }}</span>
+                </div>
+
+                <div class="info tri">
+                    <span class="label">Zip Code:</span>
+                    <span class="text">{{ vendorDetails.address?.zipCode || '—' }}</span>
+                </div>
+
+                <div class="info w-100">
+                    <span class="label">Full Address:</span>
+                    <span class="text" *ngIf="vendorDetails.address?.street">
+                        {{ vendorDetails.address.street }}, {{ vendorDetails.address.city }},
+                        {{ vendorDetails.address.state }}, {{ vendorDetails.address.country }}
+                    </span>
+                    <span class="text" *ngIf="!vendorDetails.address?.street">—</span>
+                </div>
+
+            </div>
+        </div>
+
+        <div *ngIf="!vendorDetails" class="row-section">
+            <div class="empty-state minor">No vendor information available.</div>
+        </div>
+    </div>
+
+</div>

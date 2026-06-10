@@ -1,0 +1,33 @@
+<div class="content-wrap">
+
+    <div class="row-section">
+        <div class="row-card w-100 card-xlg">
+            <div class="inner-row w-100 d-flex justify-content-between align-items-center">
+                <div class="card-title md">Order History</div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row-section my-lg-3">
+        <app-data-table
+            [columns]="tableColumns"
+            [data]="orderList"
+            [totalItems]="orderList.length"
+            [isLoading]="isLoading"
+            [filters]="[]"
+            [emptyIcon]="'cart'"
+            [emptyMessage]="'No orders found for this vendor'"
+        >
+
+            <ng-template appCellTemplate="date" let-row>
+                <span class="major">{{ row.date | date:'d MMM, y' }}</span>
+            </ng-template>
+
+            <ng-template appCellTemplate="status" let-row>
+                <span class="status sm" [ngClass]="getStatusClass(row.status)">{{ row.status }}</span>
+            </ng-template>
+
+        </app-data-table>
+    </div>
+
+</div>

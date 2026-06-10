@@ -1,0 +1,42 @@
+<form [formGroup]="cashForm" style="font-size: 0.85rem;">
+
+    <div class="fields-grid">
+        <ng-container *ngFor="let field of fieldData">
+            <ng-container [ngSwitch]="field.controlType">
+
+                <mat-form-field *ngSwitchCase="'text'" class="w-100" appearance="outline">
+                    <mat-label>{{ field.controlLabel }}</mat-label>
+                    <input matInput [formControlName]="field.controlName">
+                    <mat-error *ngIf="cashForm.get(field.controlName)?.hasError('required')">{{ field.controlLabel }} is required</mat-error>
+                </mat-form-field>
+
+                <mat-form-field *ngSwitchCase="'number'" class="w-100" appearance="outline">
+                    <mat-label>{{ field.controlLabel }}</mat-label>
+                    <input matInput type="number" [formControlName]="field.controlName">
+                    <mat-error *ngIf="cashForm.get(field.controlName)?.hasError('required')">{{ field.controlLabel }} is required</mat-error>
+                </mat-form-field>
+
+                <mat-form-field *ngSwitchCase="'select'" class="w-100" appearance="outline">
+                    <mat-label>{{ field.controlLabel }}</mat-label>
+                    <mat-select
+                        class="selectField"
+                        disableOptionCentering
+                        panelClass="matDropdown"
+                        [formControlName]="field.controlName"
+                    >
+                        <mat-option *ngFor="let option of field.selectOptions | keyvalue" [value]="option.key">{{ option.value }}</mat-option>
+                    </mat-select>
+                    <mat-error *ngIf="cashForm.get(field.controlName)?.hasError('required')">{{ field.controlLabel }} is required</mat-error>
+                </mat-form-field>
+
+            </ng-container>
+        </ng-container>
+    </div>
+
+    <div class="d-flex justify-content-end mt-2">
+        <div (click)="onSubmit()" class="cta primary-bkg mmd text-uppercase" style="min-width: 30%">
+            Submit <span *ngIf="apiLoading" class="loader ms-1"></span>
+        </div>
+    </div>
+
+</form>

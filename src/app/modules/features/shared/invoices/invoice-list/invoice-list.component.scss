@@ -1,0 +1,6 @@
+.status {
+    &.approved  { background: var(--approved-bg,  #e8f5e9); color: var(--success); }
+    &.pending   { background: var(--pending-bg,   #e3f2fd); color: #1565c0; }
+    &.inactive  { background: #f5f5f5; color: #757575; }
+    &.declined  { background: var(--danger-bg,    #fce4ec); color: var(--danger); }
+}

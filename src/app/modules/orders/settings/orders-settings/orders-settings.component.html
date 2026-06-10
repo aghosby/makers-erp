@@ -1,0 +1,19 @@
+<div class="content-wrap h-auto">
+    <div class="row-section d-flex justify-content-between align-items-center">
+        <div class="page-header">Order Settings</div>
+    </div>
+</div>
+
+<div class="tab-wrap">
+    <ul class="tab-list">
+        <li *ngFor="let link of tabMenu">
+            <a [routerLink]="[link.routeLink]" routerLinkActive="active" [routerLinkActiveOptions]="{exact: true}">
+                <span>{{ link.label }}</span>
+            </a>
+        </li>
+    </ul>
+</div>
+
+<div class="card-yxl">
+    <router-outlet></router-outlet>
+</div>

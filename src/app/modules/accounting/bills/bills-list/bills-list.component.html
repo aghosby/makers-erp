@@ -1,0 +1,83 @@
+<div class="content-wrap">
+
+    <div class="row-section d-flex justify-content-between align-items-center">
+        <div class="page-header">Bills & Expenses</div>
+        <div class="main-actions">
+            <div (click)="openCreate()" class="cta primary-bkg icon md">
+                <span class="icon">
+                    <app-icon [iconName]="'cash'" [iconWidth]="'18'" [iconHeight]="'18'"></app-icon>
+                </span>
+                New Bill
+            </div>
+        </div>
+    </div>
+
+    <div class="row-section my-lg-4">
+        <app-data-table
+            [columns]="tableColumns"
+            [data]="filteredBills"
+            [totalItems]="filteredBills.length"
+            [isLoading]="isLoading"
+            [filters]="billFilters"
+            [searchPlaceholder]="'Search by bill number or vendor'"
+            [emptyIcon]="'cash'"
+            [emptyMessage]="'No bills have been created yet'"
+            (filtersChange)="onFiltersChange($event)"
+        >
+
+            <ng-template appCellTemplate="billNumber" let-row>
+                <div class="major fw-bold">{{ row.billNumber }}</div>
+                <div class="minor mt-1">{{ row.category }}</div>
+            </ng-template>
+
+            <ng-template appCellTemplate="vendor" let-row>
+                <div class="major">{{ row.vendor }}</div>
+                <div class="minor mt-1" *ngIf="row.description">{{ row.description }}</div>
+            </ng-template>
+
+            <ng-template appCellTemplate="date" let-row>
+                <span class="major">{{ row.date | date:'d MMM, y' }}</span>
+            </ng-template>
+
+            <ng-template appCellTemplate="dueDate" let-row>
+                <span class="major" [class.text-danger]="row.status === 'Overdue'">
+                    {{ row.dueDate | date:'d MMM, y' }}
+                </span>
+            </ng-template>
+
+            <ng-template appCellTemplate="total" let-row>
+                <span class="major fw-bold">{{ currency }}{{ row.total | number:'1.0-0' }}</span>
+                <span class="attach-badge ms-2" *ngIf="row.attachment" title="Has attachment">
+                    <i class="bi bi-paperclip"></i>
+                </span>
+            </ng-template>
+
+            <ng-template appCellTemplate="requiresApproval" let-row>
+                <span *ngIf="row.requiresApproval" class="approval-badge required">
+                    <i class="bi bi-shield-check me-1"></i>Required
+                </span>
+                <span *ngIf="!row.requiresApproval" class="approval-badge none">
+                    —
+                </span>
+            </ng-template>
+
+            <ng-template appCellTemplate="status" let-row>
+                <span class="status sm" [ngClass]="getStatusClass(row.status)">{{ row.status }}</span>
+            </ng-template>
+
+            <ng-template appCellTemplate="actions" let-row>
+                <span (click)="openView(row); $event.stopPropagation()" class="table-icon view" title="View details">
+                    <i class="bi bi-eye-fill"></i>
+                </span>
+                <span (click)="openEdit(row); $event.stopPropagation()" class="table-icon edit ms-lg-2" title="Edit">
+                    <app-icon [iconName]="'edit'" [iconWidth]="'15'" [iconHeight]="'15'"></app-icon>
+                </span>
+                <span (click)="deleteBill(row); $event.stopPropagation()" class="table-icon delete ms-lg-2" title="Delete">
+                    <i class="bi bi-trash3"></i>
+                </span>
+            </ng-template>
+
+        </app-data-table>
+    </div>
+
+</div>

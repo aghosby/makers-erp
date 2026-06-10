@@ -37,6 +37,10 @@ const routes: Routes = [
         path: 'aceerp',
         loadChildren: () => import('../aceerp/aceerp.module').then(m => m.AceerpModule),
       },
+      {
+        path: 'accounting',
+        loadChildren: () => import('../accounting/accounting.module').then(m => m.AccountingModule),
+      },
     ]    
   }
 ];

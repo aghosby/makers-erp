@@ -1,0 +1,67 @@
+<div class="content-wrap">
+
+    <div class="row-section d-flex justify-content-between align-items-center">
+        <div class="page-header">Chart of Accounts</div>
+        <div class="main-actions d-flex justify-content-start align-items-center">
+            <div (click)="createAccount()" class="cta primary-bkg icon md">
+                <span class="icon">
+                    <app-icon [iconName]="'layer'" [iconWidth]="22" [iconHeight]="22"></app-icon>
+                </span>
+                Add Account
+            </div>
+        </div>
+    </div>
+
+    <div class="row-section my-lg-4">
+        <app-data-table
+            [columns]="tableColumns"
+            [data]="filteredList"
+            [totalItems]="filteredList.length"
+            [isLoading]="isLoading"
+            [filters]="accountFilters"
+            [searchPlaceholder]="'Search accounts by name, code or type'"
+            [emptyIcon]="'layer'"
+            [emptyMessage]="'No accounts have been created yet'"
+            (filtersChange)="onFiltersChange($event)"
+        >
+
+            <ng-template appCellTemplate="name" let-row>
+                <div class="d-flex align-items-center gap-2">
+                    <span class="major">{{ row.name }}</span>
+                    <span *ngIf="row.isControlAccount" class="badge-tag control" title="Control Account">Control</span>
+                </div>
+                <div class="minor mt-1">{{ row.code }}</div>
+            </ng-template>
+
+            <ng-template appCellTemplate="accountTypeName" let-row>
+                <div class="major">{{ row.accountTypeName }}</div>
+                <div class="minor mt-1" *ngIf="row.accountGroupName">{{ row.accountGroupName }}</div>
+            </ng-template>
+
+            <ng-template appCellTemplate="status" let-row>
+                <span class="status sm" [ngClass]="row.status === 'Active' ? 'approved' : 'inactive'">
+                    {{ row.status }}
+                </span>
+            </ng-template>
+
+            <ng-template appCellTemplate="currentBalance" let-row>
+                <div class="major">{{ currency }}{{ row.currentBalance | number:'1.2-2' }}</div>
+                <div class="minor mt-1" *ngIf="row.currency">{{ row.currency }}</div>
+            </ng-template>
+
+            <ng-template appCellTemplate="actions" let-row>
+                <span (click)="viewAccount(row); $event.stopPropagation()" class="table-icon view" style="font-size: 1rem; color: var(--text-sub);">
+                    <i class="bi bi-eye-fill"></i>
+                </span>
+                <span (click)="editAccount(row); $event.stopPropagation()" class="table-icon edit ms-lg-3" style="font-size: 1rem; color: var(--primary);">
+                    <app-icon [iconName]="'edit'" [iconWidth]="'15'" [iconHeight]="'15'"></app-icon>
+                </span>
+                <span (click)="deleteAccount(row); $event.stopPropagation()" class="table-icon delete ms-lg-3">
+                    <i class="bi bi-trash3-fill"></i>
+                </span>
+            </ng-template>
+
+        </app-data-table>
+    </div>
+
+</div>

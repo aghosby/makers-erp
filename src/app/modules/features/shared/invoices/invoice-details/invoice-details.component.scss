@@ -1,0 +1,95 @@
+.amount-card {
+    border: 1px solid var(--border-light);
+    border-radius: var(--radius-sm);
+    overflow: hidden;
+
+    .amount-row {
+        display: flex;
+        justify-content: space-between;
+        padding: 0.45rem 0.75rem;
+        border-bottom: 1px solid var(--border-light);
+
+        &:last-child { border-bottom: none; }
+
+        .a-label {
+            font-family: var(--font-regular);
+            font-size: 0.75rem;
+            color: var(--text-sub);
+        }
+
+        .a-value {
+            font-family: var(--font-medium);
+            font-size: 0.78rem;
+            color: var(--text-main);
+        }
+
+        &.total-row {
+            background: var(--primary-lightest);
+
+            .a-label, .a-value {
+                font-family: var(--font-bold);
+                font-size: 0.85rem;
+                color: var(--primary);
+            }
+        }
+    }
+}
+
+.items-table {
+    border: 1px solid var(--border-light);
+    border-radius: var(--radius-sm);
+    overflow: hidden;
+
+    .items-head,
+    .item-row {
+        display: flex;
+        padding: 0.55rem 1rem;
+
+        .col-desc { flex: 4; }
+        .col-num  { flex: 1.2; text-align: right; }
+    }
+
+    .items-head {
+        background: var(--background-sub);
+        border-bottom: 1px solid var(--border-light);
+
+        .col-desc, .col-num {
+            font-family: var(--font-medium);
+            font-size: 0.7rem;
+            color: var(--text-sub);
+            text-transform: uppercase;
+            letter-spacing: 0.04em;
+        }
+    }
+
+    .item-row {
+        border-bottom: 1px solid var(--border-light);
+        font-family: var(--font-regular);
+        font-size: 0.82rem;
+
+        &:last-child { border-bottom: none; }
+
+        .col-desc { color: var(--text-main); }
+        .col-num  { color: var(--text-sub); }
+
+        .fw-bold {
+            font-family: var(--font-bold);
+            color: var(--text-main);
+        }
+    }
+}
+
+.desc-text {
+    font-family: var(--font-regular);
+    font-size: 0.8rem;
+    color: var(--text-sub);
+    line-height: 1.5;
+}
+
+.item-label {
+    font-family: var(--font-medium);
+    font-size: 0.72rem;
+    color: var(--text-sub);
+    text-transform: uppercase;
+    letter-spacing: 0.03em;
+}

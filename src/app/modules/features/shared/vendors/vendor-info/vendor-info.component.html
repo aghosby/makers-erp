@@ -1,0 +1,92 @@
+<form [formGroup]="vendorForm">
+
+    <!-- Row 1: Vendor Name, Contact Person -->
+    <div class="form-row">
+        <mat-form-field appearance="outline" class="field-half">
+            <mat-label>Vendor Name</mat-label>
+            <input matInput formControlName="vendorName" placeholder="e.g. Acme Corp">
+            <mat-error *ngIf="vendorForm.get('vendorName')?.hasError('required')">Vendor name is required</mat-error>
+        </mat-form-field>
+
+        <mat-form-field appearance="outline" class="field-half">
+            <mat-label>Contact Person</mat-label>
+            <input matInput formControlName="contactPersonName" placeholder="Full name">
+            <mat-error *ngIf="vendorForm.get('contactPersonName')?.hasError('required')">Contact person is required</mat-error>
+        </mat-form-field>
+    </div>
+
+    <!-- Row 2: Email, Phone -->
+    <div class="form-row">
+        <mat-form-field appearance="outline" class="field-half">
+            <mat-label>Email Address</mat-label>
+            <input matInput formControlName="email" type="email" placeholder="vendor@email.com">
+            <mat-error *ngIf="vendorForm.get('email')?.hasError('required')">Email is required</mat-error>
+            <mat-error *ngIf="vendorForm.get('email')?.hasError('email')">Enter a valid email</mat-error>
+        </mat-form-field>
+
+        <mat-form-field appearance="outline" class="field-half">
+            <mat-label>Phone Number</mat-label>
+            <input matInput formControlName="phone" placeholder="+234...">
+        </mat-form-field>
+    </div>
+
+    <!-- Row 3: Street address -->
+    <mat-form-field appearance="outline" class="w-100">
+        <mat-label>Street Address</mat-label>
+        <input matInput formControlName="street" placeholder="Street address">
+    </mat-form-field>
+
+    <!-- Row 4: City, State, Country, Zip -->
+    <div class="form-row">
+        <mat-form-field appearance="outline" class="field-quarter">
+            <mat-label>City</mat-label>
+            <input matInput formControlName="city">
+        </mat-form-field>
+
+        <mat-form-field appearance="outline" class="field-quarter">
+            <mat-label>State</mat-label>
+            <input matInput formControlName="state">
+        </mat-form-field>
+
+        <mat-form-field appearance="outline" class="field-quarter">
+            <mat-label>Country</mat-label>
+            <mat-select formControlName="country" disableOptionCentering panelClass="matDropdown">
+                <mat-option *ngFor="let c of countryOptions" [value]="c">{{ c }}</mat-option>
+            </mat-select>
+        </mat-form-field>
+
+        <mat-form-field appearance="outline" class="field-quarter">
+            <mat-label>Zip Code</mat-label>
+            <input matInput formControlName="zipCode">
+        </mat-form-field>
+    </div>
+
+    <!-- Logo upload -->
+    <div class="logo-section">
+        <div class="logo-label">Company Logo (optional)</div>
+        <input type="file" #logoInput class="d-none" accept="image/*" (change)="onLogoSelected($event)">
+
+        <div *ngIf="!imgPic" class="logo-upload-area" (click)="logoInput.click()">
+            <app-icon [iconName]="'export'" [iconWidth]="'24'" [iconHeight]="'24'"></app-icon>
+            <span>Click to upload a logo</span>
+            <span class="logo-hint">Max 1 MB · PNG, JPG</span>
+        </div>
+
+        <div *ngIf="imgPic" class="logo-preview">
+            <img [src]="imgPic" alt="Vendor logo" class="logo-img">
+            <span class="logo-remove" (click)="removeLogo()" title="Remove"><i class="bi bi-x-circle"></i></span>
+        </div>
+
+        <div *ngIf="imgUploadError" class="logo-error">{{ imgUploadError }}</div>
+    </div>
+
+    <!-- Actions -->
+    <div class="d-flex justify-content-end gap-3 mt-3">
+        <div (click)="dismiss()" class="cta trans-bkg mmd">Cancel</div>
+        <div (click)="onSubmit()" class="cta primary-bkg mmd" [class.btn-disabled]="apiLoading">
+            {{ data.isExisting ? 'Save Changes' : 'Add Vendor' }}
+            <span *ngIf="apiLoading" class="loader ms-1"></span>
+        </div>
+    </div>
+
+</form>

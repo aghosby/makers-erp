@@ -12,6 +12,12 @@
             </span>
             <span>Orders Module</span>
         </button>
+        <button [routerLink]="'accounting'" [class.active]="activeModule == 'accounting'">
+            <span class="icon">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="black" xmlns="http://www.w3.org/2000/svg" [innerHTML]="transformSvg(icons.register)" class=""></svg>
+            </span>
+            <span>Accounting</span>
+        </button>
         <!-- <button (click)="activeModule = 'acs'" [class.active]="activeModule == 'acs'">
             <span class="icon">
                 <svg width="24" height="24" viewBox="0 0 24 24" fill="black" xmlns="http://www.w3.org/2000/svg" [innerHTML]="transformSvg(icons.faceId)" class=""></svg>

@@ -1,0 +1,151 @@
+<div class="content-wrap">
+
+  <div class="row-section d-flex justify-content-between align-items-center">
+    <div class="page-header">
+      <span (click)="goBack()" class="back-btn"><i class="bi bi-arrow-left"></i></span>
+      <span *ngIf="accountDetails">{{ accountDetails.name }}</span>
+      <span *ngIf="!accountDetails">Account Details</span>
+    </div>
+    <div class="main-actions d-flex justify-content-start align-items-center" *ngIf="accountDetails">
+      <span class="status sm me-lg-3" [ngClass]="accountDetails.status === 'Active' ? 'approved' : 'inactive'">
+        {{ accountDetails.status }}
+      </span>
+      <div (click)="editAccount()" class="cta trans-bkg icon md">
+        <span class="icon">
+          <app-icon [iconName]="'edit'" [iconWidth]="'18'" [iconHeight]="'18'"></app-icon>
+        </span>
+        Edit Account
+      </div>
+    </div>
+  </div>
+
+  <div *ngIf="isLoading" class="row-section w-100">
+    <app-loading-data [height]="'15rem'"></app-loading-data>
+  </div>
+
+  <div *ngIf="!isLoading && accountDetails" class="row-section my-lg-4">
+    <div class="inner-row-hld d-flex justify-content-between align-items-start">
+
+      <!-- Left: Account Information -->
+      <div class="row-card card-xsm card-ymd">
+        <div class="cont side-cont rd-pd h-auto">
+          <div class="info major">
+            <div class="image initials">{{ accountDetails.code }}</div>
+            <div class="det mt-lg-3">
+              <div class="name">{{ accountDetails.name }}</div>
+              <div class="role text-capitalize">{{ accountDetails.accountTypeName }}</div>
+            </div>
+          </div>
+          <div class="info minor mt-lg-3">
+            <div class="listed-items">
+              <div class="item" *ngIf="accountDetails.accountGroupName">
+                <span class="label">Account Group:</span>
+                <span class="text">{{ accountDetails.accountGroupName }}</span>
+              </div>
+              <div class="item">
+                <span class="label">Normal Balance:</span>
+                <span class="text">{{ accountDetails.normalBalance }}</span>
+              </div>
+              <div class="item" *ngIf="accountDetails.branch">
+                <span class="label">Branch:</span>
+                <span class="text">{{ accountDetails.branch }}</span>
+              </div>
+              <div class="item" *ngIf="accountDetails.currency">
+                <span class="label">Currency:</span>
+                <span class="text">{{ accountDetails.currency }}</span>
+              </div>
+              <div class="item" *ngIf="accountDetails.parentAccountName">
+                <span class="label">Parent Account:</span>
+                <span class="text">{{ accountDetails.parentAccountName }}</span>
+              </div>
+            </div>
+          </div>
+          <div class="info minor mt-lg-3" *ngIf="accountDetails.description">
+            <div class="item-label mb-1">Description</div>
+            <div class="desc-text">{{ accountDetails.description }}</div>
+          </div>
+          <div class="info minor mt-lg-3">
+            <div class="flags-wrap d-flex flex-wrap gap-2 mt-2">
+              <span *ngIf="accountDetails.isBankAccount"    class="badge-tag control">Bank Account</span>
+              <span *ngIf="accountDetails.isCashAccount"    class="badge-tag control">Cash Account</span>
+              <span *ngIf="accountDetails.isControlAccount" class="badge-tag control">Control</span>
+              <span *ngIf="accountDetails.allowManualPosting" class="badge-tag alt">Manual Posting</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Right: Balance Summary + Activity -->
+      <div class="row-card card-xlg card-ymd d-flex flex-column gap-4">
+
+        <!-- Balance Summary -->
+        <div class="row-card w-100">
+          <div class="inner-row w-100 d-flex justify-content-between align-items-center mb-lg-3">
+            <div class="card-title md">Balance Summary</div>
+          </div>
+          <div class="balance-grid d-flex justify-content-between gap-3 flex-wrap">
+            <div class="balance-card">
+              <div class="bal-label">Opening Balance</div>
+              <div class="bal-value">{{ currency }}{{ openingBalance | number:'1.2-2' }}</div>
+            </div>
+            <div class="balance-card">
+              <div class="bal-label">Total Debits</div>
+              <div class="bal-value debit">{{ currency }}{{ debitTotal | number:'1.2-2' }}</div>
+            </div>
+            <div class="balance-card">
+              <div class="bal-label">Total Credits</div>
+              <div class="bal-value credit">{{ currency }}{{ creditTotal | number:'1.2-2' }}</div>
+            </div>
+            <div class="balance-card highlight">
+              <div class="bal-label">Current Balance</div>
+              <div class="bal-value primary">{{ currency }}{{ currentBalance | number:'1.2-2' }}</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Activity -->
+        <div class="row-card w-100">
+          <div class="inner-row w-100 d-flex justify-content-between align-items-center mb-lg-3">
+            <div class="card-title md">Activity</div>
+          </div>
+          <app-data-table
+            [columns]="ledgerColumns"
+            [data]="ledgerEntries"
+            [totalItems]="ledgerEntries.length"
+            [isLoading]="isLedgerLoading"
+            [showSearch]="false"
+            [emptyIcon]="'register'"
+            [emptyMessage]="'No transactions posted to this account'"
+          >
+            <ng-template appCellTemplate="date" let-row>
+              <span class="major">{{ row.date | date:'d MMM, y' }}</span>
+            </ng-template>
+
+            <ng-template appCellTemplate="transactionType" let-row>
+              <span class="badge-tag alt">{{ row.transactionType }}</span>
+            </ng-template>
+
+            <ng-template appCellTemplate="debit" let-row>
+              <span class="major" [class.text-success]="row.debit > 0">
+                {{ row.debit > 0 ? (row.debit | number:'1.2-2') : '—' }}
+              </span>
+            </ng-template>
+
+            <ng-template appCellTemplate="credit" let-row>
+              <span class="major" [class.text-danger]="row.credit > 0">
+                {{ row.credit > 0 ? (row.credit | number:'1.2-2') : '—' }}
+              </span>
+            </ng-template>
+
+            <ng-template appCellTemplate="balance" let-row>
+              <span class="major fw-600">{{ row.balance | number:'1.2-2' }}</span>
+            </ng-template>
+
+          </app-data-table>
+        </div>
+
+      </div>
+    </div>
+  </div>
+
+</div>

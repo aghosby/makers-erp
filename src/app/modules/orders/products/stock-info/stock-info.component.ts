@@ -107,7 +107,7 @@ export class StockInfoComponent implements OnInit {
       {
         controlName: 'supplier',
         controlType: 'select',
-        controlLabel: 'Supplier',
+        controlLabel: 'Vendor',
         controlWidth: '48%',
         initialValue: '',
         selectOptions: this.arrayToObject(this.dialogData.suppliers, 'supplierName'),

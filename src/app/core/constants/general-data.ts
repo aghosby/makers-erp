@@ -1,3 +1,5 @@
+export const DEFAULT_CURRENCY = '₦';
+
 export const CURRENCY = [
     {
         _id: 'NGN',

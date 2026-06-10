@@ -1,9 +1,9 @@
 import { Component, Inject, OnInit } from '@angular/core';
 import { FormGroup, FormBuilder, Validators } from '@angular/forms';
-import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { FormFields } from 'src/app/shared/models/form-fields';
 import { HumanResourcesService } from 'src/app/shared/services/hr/human-resources.service';
 import { NotificationService } from 'src/app/shared/services/utils/notification.service';
+import { MODAL_DATA, ModalRef } from 'src/app/shared/models/modal.models';
 
 @Component({
   selector: 'app-department-info',
@@ -18,9 +18,9 @@ export class DepartmentInfoComponent implements OnInit {
   apiLoading:boolean = false;
 
   constructor(
-    @Inject(MAT_DIALOG_DATA) public data: any,
-    public dialogRef: MatDialogRef<DepartmentInfoComponent>,
-    private hrService: HumanResourcesService,     
+    @Inject(MODAL_DATA) public data: any,
+    private modalRef: ModalRef,
+    private hrService: HumanResourcesService,
     private notifyService: NotificationService,
     private fb: FormBuilder
   ) {
@@ -85,7 +85,7 @@ export class DepartmentInfoComponent implements OnInit {
               if(this.data.isExisting) this.notifyService.showSuccess('This department has been updated successfully');
               else this.notifyService.showSuccess('This department has been created successfully');
               this.apiLoading = false;
-              this.dialogRef.close();
+              this.modalRef.dismiss();
             }
             //this.getPageData();
           },
@@ -102,7 +102,7 @@ export class DepartmentInfoComponent implements OnInit {
             if(res.status == 200) {
               this.notifyService.showSuccess('This department has been created successfully');
               this.apiLoading = false;
-              this.dialogRef.close();
+              this.modalRef.dismiss();
             }
             //this.getPageData();
           },

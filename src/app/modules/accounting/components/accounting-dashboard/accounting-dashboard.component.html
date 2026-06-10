@@ -1,0 +1,269 @@
+<div class="content-wrap pb-5 mb-5">
+
+  <!-- Header -->
+  <div class="row-section d-flex justify-content-between align-items-center">
+    <div class="page-header">Accounting Dashboard</div>
+    <div class="actions-info mat-menu-select">
+      <div [matMenuTriggerFor]="periodMenu" class="dropdown-trigger">
+        {{ currentPeriod }} <i class="bi bi-chevron-down"></i>
+      </div>
+      <mat-menu #periodMenu="matMenu" class="more">
+        <div *ngFor="let p of periods" class="menu-item" mat-menu-item (click)="changePeriod(p)">{{ p }}</div>
+      </mat-menu>
+    </div>
+  </div>
+
+  <div class="row-section my-lg-4 pb-3">
+    <div class="inner-row-hld d-flex align-items-start justify-content-between pb-5">
+
+      <!-- ── Row 1: KPI Cards ──────────────────────────────── -->
+      <div class="row-card w-100 d-flex justify-content-between align-items-start status-summary">
+        <div class="col-card card-xmmd-col4 card-yxl d-flex justify-content-between">
+
+          <div class="cont status-card card-xmmd card-yxl d-flex flex-column justify-content-between">
+            <div class="card-det d-flex align-items-center">
+              <div class="symbol"><span class="icon">
+                <app-icon [iconName]="'wallet'" [iconWidth]="'36'" [iconHeight]="'36'"></app-icon>
+              </span></div>
+              <div class="card-title reg">Total Revenue</div>
+            </div>
+            <div class="card-det d-flex justify-content-between align-items mt-lg-1">
+              <span class="value">₦7,180,000</span>
+              <span class="arrow increase"><i class="bi bi-arrow-up-right"></i>8%</span>
+            </div>
+          </div>
+
+          <div class="cont status-card card-xmmd card-yxl d-flex flex-column justify-content-between">
+            <div class="card-det d-flex align-items-center">
+              <div class="symbol"><span class="icon">
+                <app-icon [iconName]="'cash'" [iconWidth]="'36'" [iconHeight]="'36'"></app-icon>
+              </span></div>
+              <div class="card-title reg">Total Expenses</div>
+            </div>
+            <div class="card-det d-flex justify-content-between align-items mt-lg-1">
+              <span class="value">₦5,769,800</span>
+              <span class="arrow decrease"><i class="bi bi-arrow-up-right"></i>3%</span>
+            </div>
+          </div>
+
+        </div>
+
+        <div class="col-card card-xmmd-col4 card-yxl d-flex justify-content-between">
+
+          <div class="cont status-card card-xmmd card-yxl d-flex flex-column justify-content-between">
+            <div class="card-det d-flex align-items-center">
+              <div class="symbol"><span class="icon">
+                <app-icon [iconName]="'trending'" [iconWidth]="'36'" [iconHeight]="'36'"></app-icon>
+              </span></div>
+              <div class="card-title reg">Net Profit</div>
+            </div>
+            <div class="card-det d-flex justify-content-between align-items mt-lg-1">
+              <span class="value">₦970,200</span>
+              <span class="arrow increase"><i class="bi bi-arrow-up-right"></i>12%</span>
+            </div>
+          </div>
+
+          <div class="cont status-card card-xmmd card-yxl d-flex flex-column justify-content-between">
+            <div class="card-det d-flex align-items-center">
+              <div class="symbol"><span class="icon">
+                <app-icon [iconName]="'card'" [iconWidth]="'36'" [iconHeight]="'36'"></app-icon>
+              </span></div>
+              <div class="card-title reg">Outstanding A/R</div>
+            </div>
+            <div class="card-det d-flex justify-content-between align-items mt-lg-1">
+              <span class="value">₦1,834,125</span>
+              <span class="arrow decrease"><i class="bi bi-arrow-down-right"></i>5%</span>
+            </div>
+          </div>
+
+        </div>
+      </div>
+
+      <!-- ── Row 2: Revenue vs Expenses + Invoice Status ───── -->
+      <div class="row-card w-100 ecard-ymd d-flex justify-content-between align-items-start">
+
+        <div class="cont card-xmlg">
+          <div class="hdr d-flex justify-content-between align-items-center mt-lg-1 mb-lg-3">
+            <div class="title">
+              <div class="card-title clr">Revenue vs Expenses</div>
+              <div class="preamble">Monthly comparison · {{ currentPeriod }}</div>
+            </div>
+            <div class="actions-info mat-menu-select">
+              <div [matMenuTriggerFor]="revenueMenu" class="dropdown-trigger">
+                {{ currentPeriod }} <i class="bi bi-chevron-down"></i>
+              </div>
+              <mat-menu #revenueMenu="matMenu" class="more">
+                <div *ngFor="let p of periods" class="menu-item" mat-menu-item (click)="changePeriod(p)">{{ p }}</div>
+              </mat-menu>
+            </div>
+          </div>
+          <div class="col-card card-xxl">
+            <highcharts-chart
+              [Highcharts]="RevenueHighcharts"
+              [options]="revenueChartOptions"
+              style="width: 100%; max-width: 100%; height: 250px; display: block;"
+            ></highcharts-chart>
+          </div>
+        </div>
+
+        <div class="cont card-xmd">
+          <div class="hdr d-flex justify-content-between align-items-center mt-lg-1 mb-lg-2">
+            <div class="title">
+              <div class="card-title clr">Invoice Status</div>
+              <ul class="legend general d-flex mt-2">
+                <li [class]="item.status" *ngFor="let item of invoiceStatusData">{{ item.name }}</li>
+              </ul>
+            </div>
+          </div>
+          <div class="col-card card-xxl d-flex justify-content-center align-items-center">
+            <ngx-charts-pie-chart
+              [view]="[260, 220]"
+              [scheme]="invoicePieColorScheme"
+              [results]="invoiceStatusData"
+              [legend]="false"
+              [explodeSlices]="false"
+              [labels]="false"
+              [doughnut]="true"
+              [gradient]="true"
+            ></ngx-charts-pie-chart>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- ── Row 3: Net Profit Trend + Expense Categories + Bills Due ── -->
+      <div class="row-card w-100 ecard-ymd d-flex justify-content-between align-items-start">
+
+        <div class="cont card-xmd">
+          <div class="hdr d-flex justify-content-between align-items-center mt-lg-1 mb-lg-2">
+            <div class="title">
+              <div class="card-title clr">Net Profit Trend</div>
+              <div class="preamble">Monthly net profit this year</div>
+            </div>
+          </div>
+          <highcharts-chart
+            [Highcharts]="ProfitHighcharts"
+            [options]="profitChartOptions"
+            style="width: 100%; max-width: 100%; height: 220px; display: block;"
+          ></highcharts-chart>
+        </div>
+
+        <div class="cont card-xmd">
+          <div class="hdr d-flex justify-content-between align-items-center mt-lg-1 mb-lg-2">
+            <div class="title">
+              <div class="card-title clr">Expenses by Category</div>
+              <div class="preamble">Year-to-date spend breakdown</div>
+            </div>
+          </div>
+          <highcharts-chart
+            [Highcharts]="ExpenseHighcharts"
+            [options]="expenseChartOptions"
+            style="width: 100%; max-width: 100%; height: 220px; display: block;"
+          ></highcharts-chart>
+        </div>
+
+        <div class="cont card-xsm">
+          <div class="card-title clr mb-lg-2">Bills Due Soon</div>
+          <div class="listed-items">
+            <div class="bill-item" *ngFor="let bill of billsDue">
+              <div class="bill-info">
+                <div class="bill-vendor">{{ bill.vendor }}</div>
+                <div class="bill-date">Due {{ bill.dueDate }}</div>
+              </div>
+              <div class="bill-right">
+                <div class="bill-amount">{{ bill.amount }}</div>
+                <span class="status sm" [ngClass]="getBillClass(bill.status)">{{ bill.status }}</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- ── Row 4: AR/AP Summary + Cash Position + Recent Transactions ── -->
+      <div class="row-card w-100 ecard-ymd d-flex justify-content-between align-items-start">
+
+        <div class="cont card-xmd card-yxl">
+          <div class="hdr d-flex justify-content-between align-items-center mt-lg-1 mb-lg-2">
+            <div class="title">
+              <div class="card-title clr">Cash Position</div>
+              <div class="preamble">vs. cash target of ₦5,000,000</div>
+            </div>
+          </div>
+          <div class="w-100 guage-chart d-flex flex-column justify-content-center align-items-center">
+            <ngx-gauge
+              [size]="220"
+              type="semi"
+              [thick]="14"
+              [value]="cashPercent"
+              cap="round"
+              append="%"
+              foregroundColor="#4285f4"
+              backgroundColor="#ecf0f1"
+            ></ngx-gauge>
+            <div class="gauge-meta">
+              <div class="gauge-value">{{ cashBalance }}</div>
+              <div class="gauge-label">Current Cash Balance</div>
+            </div>
+            <div class="ar-ap-row d-flex justify-content-between w-100 mt-3">
+              <div class="ar-ap-card receivable">
+                <div class="ar-ap-label">Receivables (A/R)</div>
+                <div class="ar-ap-value">{{ arTotal }}</div>
+              </div>
+              <div class="ar-ap-card payable">
+                <div class="ar-ap-label">Payables (A/P)</div>
+                <div class="ar-ap-value">{{ apTotal }}</div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="cont card-xmd">
+          <div class="hdr d-flex justify-content-between align-items-center mt-lg-1 mb-lg-2">
+            <div class="title">
+              <div class="card-title clr">Bills Status</div>
+              <ul class="legend general d-flex mt-2">
+                <li [class]="item.status" *ngFor="let item of billStatusData">{{ item.name }}</li>
+              </ul>
+            </div>
+          </div>
+          <div class="col-card card-xxl d-flex justify-content-center align-items-center">
+            <ngx-charts-pie-chart
+              [view]="[260, 220]"
+              [scheme]="billPieColorScheme"
+              [results]="billStatusData"
+              [legend]="false"
+              [explodeSlices]="false"
+              [labels]="false"
+              [doughnut]="true"
+              [gradient]="true"
+            ></ngx-charts-pie-chart>
+          </div>
+        </div>
+
+        <div class="cont card-xsm">
+          <div class="card-title clr mb-lg-2">Recent Transactions</div>
+          <div class="listed-items">
+            <div class="txn-item" *ngFor="let txn of recentTransactions">
+              <div class="txn-icon" [class.credit]="txn.type === 'credit'" [class.debit]="txn.type === 'debit'">
+                <i class="bi" [ngClass]="txn.type === 'credit' ? 'bi-arrow-down-left' : 'bi-arrow-up-right'"></i>
+              </div>
+              <div class="txn-info">
+                <div class="txn-ref">{{ txn.ref }}</div>
+                <div class="txn-desc">{{ txn.desc }}</div>
+              </div>
+              <div class="txn-right">
+                <div class="txn-amount" [class.credit]="txn.type === 'credit'" [class.debit]="txn.type === 'debit'">
+                  {{ txn.type === 'credit' ? '+' : '-' }}{{ txn.amount }}
+                </div>
+                <div class="txn-date">{{ txn.date }}</div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+      </div>
+
+    </div>
+  </div>
+</div>

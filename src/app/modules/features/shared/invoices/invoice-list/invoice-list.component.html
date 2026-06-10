@@ -1,0 +1,63 @@
+<div class="content-wrap">
+
+    <div class="row-section d-flex justify-content-between align-items-center">
+        <div class="page-header">Invoices</div>
+        <div class="main-actions">
+            <div (click)="createInvoice()" class="cta primary-bkg icon md">
+                <span class="icon">
+                    <app-icon [iconName]="'card'" [iconWidth]="'18'" [iconHeight]="'18'"></app-icon>
+                </span>
+                New Invoice
+            </div>
+        </div>
+    </div>
+
+    <div class="row-section my-lg-4">
+        <app-data-table
+            [columns]="tableColumns"
+            [data]="filteredInvoices"
+            [totalItems]="filteredInvoices.length"
+            [isLoading]="isLoading"
+            [filters]="invoiceFilters"
+            [searchPlaceholder]="'Search by invoice number or customer'"
+            [emptyIcon]="'card'"
+            [emptyMessage]="'No invoices have been created yet'"
+            (filtersChange)="onFiltersChange($event)"
+        >
+
+            <ng-template appCellTemplate="invoiceNumber" let-row>
+                <div class="major fw-bold">{{ row.invoiceNumber }}</div>
+                <div class="minor mt-1">{{ row.entity }}</div>
+            </ng-template>
+
+            <ng-template appCellTemplate="date" let-row>
+                <span class="major">{{ row.date | date:'d MMM, y' }}</span>
+            </ng-template>
+
+            <ng-template appCellTemplate="dueDate" let-row>
+                <span class="major" [class.text-danger]="row.status === 'Overdue'">
+                    {{ row.dueDate | date:'d MMM, y' }}
+                </span>
+            </ng-template>
+
+            <ng-template appCellTemplate="total" let-row>
+                <span class="major fw-bold">{{ currency }}{{ row.total | number:'1.0-0' }}</span>
+            </ng-template>
+
+            <ng-template appCellTemplate="status" let-row>
+                <span class="status sm" [ngClass]="getStatusClass(row.status)">{{ row.status }}</span>
+            </ng-template>
+
+            <ng-template appCellTemplate="actions" let-row>
+                <span (click)="viewInvoice(row); $event.stopPropagation()" class="table-icon view" style="font-size: 1rem; color: var(--text-sub);">
+                    <i class="bi bi-eye-fill"></i>
+                </span>
+                <span (click)="editInvoice(row); $event.stopPropagation()" class="table-icon edit ms-lg-3" style="font-size: 1rem; color: var(--primary);">
+                    <app-icon [iconName]="'edit'" [iconWidth]="'15'" [iconHeight]="'15'"></app-icon>
+                </span>
+            </ng-template>
+
+        </app-data-table>
+    </div>
+
+</div>

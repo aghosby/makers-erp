@@ -83,7 +83,7 @@ export const navbarData = [
                 label: 'Human Resources',
             },
             {
-                routeLink: 'settings/accounting',
+                routeLink: 'accounting/accounting-settings',
                 icon: 'bi bi-calculator-fill',
                 label: 'Accounting'
             },
@@ -267,9 +267,9 @@ export const navbarDataOrders = [
         label: 'Products'
     },
     {
-        routeLink: 'orders/suppliers',
+        routeLink: 'orders/vendors',
         icon: 'building',
-        label: 'Suppliers'
+        label: 'Vendors'
     },
     {
         routeLink: 'orders/couriers',
@@ -295,7 +295,61 @@ export const navbarDataOrders = [
         routeLink: 'orders/reports',
         icon: 'clipboard',
         label: 'Reports'
+    },
+    {
+        routeLink: 'orders/orders-settings',
+        icon: 'controls',
+        label: 'Order Settings'
     }
+]
+
+// Accounting Module Menu Items
+export const navbarDataAccounting = [
+    {
+        routeLink: 'accounting/dashboard',
+        icon: 'grid',
+        label: 'Dashboard'
+    },
+    {
+        routeLink: 'accounting/chart-of-accounts',
+        icon: 'layer',
+        label: 'Chart of Accounts'
+    },
+    {
+        routeLink: 'accounting/general-ledger',
+        icon: 'register',
+        label: 'General Ledger'
+    },
+    {
+        routeLink: 'accounting/journal-entries',
+        icon: 'newspaper',
+        label: 'Journal Entries'
+    },
+    {
+        routeLink: 'accounting/invoices',
+        icon: 'card',
+        label: 'Invoices'
+    },
+    {
+        routeLink: 'accounting/bills',
+        icon: 'cash',
+        label: 'Bills & Expenses'
+    },
+    {
+        routeLink: 'accounting/vendors',
+        icon: 'building',
+        label: 'Vendors'
+    },
+    {
+        routeLink: 'accounting/reports',
+        icon: 'chartColumn',
+        label: 'Financial Reports'
+    },
+    {
+        routeLink: 'accounting/accounting-settings',
+        icon: 'controls',
+        label: 'Accounting Settings'
+    },
 ]
 
 export interface INavbarData {

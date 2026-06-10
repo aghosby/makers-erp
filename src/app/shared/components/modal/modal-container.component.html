@@ -1,0 +1,14 @@
+<div class="modal-wrap">
+    <div class="modal-hdr">
+        <div class="modal-hdr-left">
+            <span class="modal-icon" *ngIf="icon">
+                <app-icon [iconName]="icon" [iconWidth]="40" [iconHeight]="40"></app-icon>
+            </span>
+            <span class="modal-title" *ngIf="title">{{ title }}</span>
+        </div>
+        <span class="close-btn" (click)="close()"><i class="bi bi-x-lg"></i></span>
+    </div>
+    <div class="modal-body">
+        <ng-container #outlet></ng-container>
+    </div>
+</div>

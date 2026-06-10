@@ -1,0 +1,141 @@
+.header-fields {
+    display: flex;
+    gap: 1rem;
+    align-items: flex-start;
+    margin-bottom: 1rem;
+
+    .field-date        { flex: 1.2; }
+    .field-entity      { flex: 1.2; }
+    .field-description { flex: 2; }
+
+    mat-form-field { width: 100%; }
+}
+
+.lines-table {
+    border: 1px solid var(--border-light);
+    border-radius: var(--radius-sm);
+    overflow: hidden;
+
+    .lines-head,
+    .line-row,
+    .totals-row {
+        display: flex;
+        align-items: center;
+        padding: 0.55rem 1rem;
+
+        .col-acct { flex: 4; padding-right: 0.75rem; }
+        .col-num  { flex: 1.5; padding-right: 0.5rem; }
+        .col-del  { width: 1.5rem; flex-shrink: 0; }
+    }
+
+    .lines-head {
+        background: var(--background-sub);
+        border-bottom: 1px solid var(--border-light);
+
+        .col-acct,
+        .col-num {
+            font-family: var(--font-medium);
+            font-size: 0.7rem;
+            color: var(--text-sub);
+            text-transform: uppercase;
+            letter-spacing: 0.04em;
+        }
+    }
+
+    .line-row {
+        border-bottom: 1px solid var(--border-light);
+
+        .col-num { text-align: right; }
+    }
+
+    .totals-row {
+        background: var(--background-sub);
+
+        .col-acct {
+            font-family: var(--font-medium);
+            font-size: 0.72rem;
+            color: var(--text-sub);
+            text-transform: uppercase;
+            letter-spacing: 0.04em;
+        }
+
+        .col-num {
+            font-family: var(--font-bold);
+            font-size: 0.85rem;
+            text-align: right;
+        }
+    }
+}
+
+.line-select {
+    width: 100%;
+    border: 1px solid var(--border-light);
+    border-radius: var(--radius-xs);
+    padding: 0.3rem 0.65rem;
+    background: white;
+    font-size: 0.8rem;
+    font-family: var(--font-regular);
+
+    &.mat-select-invalid,
+    &:hover {
+        border-color: var(--primary-light);
+    }
+}
+
+.line-input {
+    width: 100%;
+    border: 1px solid var(--border-light);
+    border-radius: var(--radius-xs);
+    padding: 0.35rem 0.65rem;
+    font-size: 0.82rem;
+    font-family: var(--font-regular);
+    text-align: right;
+    outline: none;
+    background: white;
+    -moz-appearance: textfield;
+
+    &::-webkit-inner-spin-button,
+    &::-webkit-outer-spin-button { -webkit-appearance: none; }
+
+    &:focus { border-color: var(--primary); }
+}
+
+.del-btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 1.25rem;
+    height: 1.25rem;
+    border-radius: 50%;
+    cursor: pointer;
+    color: var(--text-sub);
+    font-size: 0.9rem;
+    transition: var(--transition-norm);
+
+    &:hover {
+        background: var(--danger-lightest, #ffe0e0);
+        color: var(--danger);
+    }
+}
+
+.add-line-btn {
+    font-family: var(--font-medium);
+    font-size: 0.8rem;
+    color: var(--primary);
+    cursor: pointer;
+
+    &:hover { text-decoration: underline; }
+}
+
+.balance-status {
+    font-family: var(--font-medium);
+    font-size: 0.8rem;
+
+    &.balanced   { color: var(--success); }
+    &.unbalanced { color: var(--warning); }
+}
+
+.btn-disabled {
+    opacity: 0.45;
+    pointer-events: none;
+}

@@ -1,0 +1,84 @@
+<div class="content-wrap">
+
+    <div class="row-section d-flex justify-content-between align-items-center">
+        <div class="page-header">Vendors</div>
+        <div class="main-actions d-flex align-items-center gap-2">
+            <div (click)="openCreate()" class="cta primary-bkg icon md">
+                <span class="icon">
+                    <app-icon [iconName]="'userPlus'" [iconWidth]="'18'" [iconHeight]="'18'"></app-icon>
+                </span>
+                Add Vendor
+            </div>
+        </div>
+    </div>
+
+    <div class="row-section my-lg-4">
+        <app-data-table
+            [columns]="tableColumns"
+            [data]="filteredVendors"
+            [totalItems]="filteredVendors.length"
+            [isLoading]="isLoading"
+            [filters]="vendorFilters"
+            [searchPlaceholder]="'Search by vendor name or email'"
+            [emptyIcon]="'building'"
+            [emptyMessage]="'No vendors have been added yet'"
+            (filtersChange)="onFiltersChange($event)"
+        >
+
+            <ng-template appCellTemplate="vendorName" let-row>
+                <div class="d-flex align-items-center gap-2">
+                    <div *ngIf="row.imageUrl" class="vendor-avatar">
+                        <img [src]="row.imageUrl" [alt]="row.vendorName">
+                    </div>
+                    <div *ngIf="!row.imageUrl" class="vendor-initials">
+                        {{ row.vendorName?.[0] | uppercase }}
+                    </div>
+                    <div>
+                        <div class="major fw-bold">{{ row.vendorName }}</div>
+                        <div class="minor mt-1" *ngIf="row.contactPersonName">{{ row.contactPersonName }}</div>
+                    </div>
+                </div>
+            </ng-template>
+
+            <ng-template appCellTemplate="email" let-row>
+                <span class="major">{{ row.email }}</span>
+            </ng-template>
+
+            <ng-template appCellTemplate="location" let-row>
+                <span class="major" *ngIf="row.address?.city || row.address?.state">
+                    {{ row.address?.city }}<span *ngIf="row.address?.city && row.address?.state">, </span>{{ row.address?.state }}
+                </span>
+                <span class="major text-muted" *ngIf="!row.address?.city && !row.address?.state">—</span>
+            </ng-template>
+
+            <ng-template appCellTemplate="phone" let-row>
+                <span class="major">{{ row.phone || '—' }}</span>
+            </ng-template>
+
+            <ng-template appCellTemplate="activeOrders" let-row>
+                <span class="major fw-bold" *ngIf="row.activeOrders > 0" style="color: var(--primary);">
+                    {{ row.activeOrders }}
+                </span>
+                <span class="major" *ngIf="!row.activeOrders">0</span>
+            </ng-template>
+
+            <ng-template appCellTemplate="fulfilledOrders" let-row>
+                <span class="major">{{ row.fulfilledOrders ?? 0 }}</span>
+            </ng-template>
+
+            <ng-template appCellTemplate="actions" let-row>
+                <span (click)="viewVendor(row); $event.stopPropagation()" class="table-icon view" title="View">
+                    <i class="bi bi-eye-fill"></i>
+                </span>
+                <span (click)="openEdit(row); $event.stopPropagation()" class="table-icon edit ms-lg-2" title="Edit">
+                    <app-icon [iconName]="'edit'" [iconWidth]="'15'" [iconHeight]="'15'"></app-icon>
+                </span>
+                <span (click)="deleteVendor(row); $event.stopPropagation()" class="table-icon delete ms-lg-2" title="Delete">
+                    <i class="bi bi-trash3"></i>
+                </span>
+            </ng-template>
+
+        </app-data-table>
+    </div>
+
+</div>

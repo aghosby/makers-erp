@@ -1,78 +1,39 @@
-<div class="create-card">
-    <div class="top-card">
-        <div class="inner-wrap">
-            <!-- <div class="hdr-title">
-                <div class="create-title">Create New Employee</div>
+<form [formGroup]="departmentForm" class="form-container" style="font-size: 0.85rem;">
 
-                
-            </div> -->
-            <div class="hdr-details">
-                <div class="inner-wrap">
-                    <div class="create-icon">
-                        <span class="icon">
-                            <app-icon [iconName]="'layer'" [iconWidth]="50" [iconHeight]="50"></app-icon>
-                        </span>
-                        <!-- <img src="../../../../assets/images/illustrations/puzzle.png" /> -->
-                    </div>
-                    <div class="create-details">
-                        <div *ngIf="!data.isExisting" class="create-name">Create Department</div>
-                        <div *ngIf="data.isExisting" class="create-name">Edit Department</div>
-                        <!-- <p>The first step is to complete your business information.</p> -->
-                    </div>
-                    <div (click)="dialogRef.close()" class="close-btn">&times;</div>
-                    <!-- <div *ngIf="isUpdateCustomer" class="create-details">
-                        <div class="create-name">{{firstName}} {{lastName}}</div>
-                        <div class="create-id">Customer ID: {{customerId}}</div>
-                    </div> -->
-                </div>
-                <div class="hdr-overlay"></div>
-            </div>
-            
+    <ng-container *ngFor="let field of departmentFieldData">
+        <ng-container [ngSwitch]="field.controlType">
+
+            <mat-form-field *ngSwitchCase="'text'" class="mb-lg-2 w-100" appearance="outline">
+                <mat-label class="text-capitalize">{{field.controlLabel}}</mat-label>
+                <input matInput [formControlName]="field.controlName">
+                <mat-error *ngIf="departmentForm.get(field.controlName)?.hasError('required')">{{field.controlLabel}} is required</mat-error>
+            </mat-form-field>
+
+            <mat-form-field *ngSwitchCase="'select'" class="mb-lg-2 w-100" appearance="outline">
+                <mat-label>{{field.controlLabel}}</mat-label>
+                <mat-select
+                    class="selectField"
+                    disableOptionCentering
+                    panelClass="matDropdown"
+                    [formControlName]="field.controlName"
+                >
+                    <mat-option *ngFor="let option of field.selectOptions | keyvalue" [value]="option.key">{{option.value}}</mat-option>
+                </mat-select>
+                <mat-error *ngIf="departmentForm.get(field.controlName)?.hasError('required')">{{field.controlLabel}} is required</mat-error>
+            </mat-form-field>
+
+            <mat-form-field *ngSwitchCase="'textarea'" class="mb-lg-1 w-100" appearance="outline">
+                <mat-label>{{field.controlLabel}}</mat-label>
+                <textarea rows="2" matInput [formControlName]="field.controlName"></textarea>
+            </mat-form-field>
+
+        </ng-container>
+    </ng-container>
+
+    <div class="d-flex justify-content-end mt-3">
+        <div (click)="onSubmit()" class="cta primary-bkg mmd text-uppercase" style="min-width: 30%">
+            Submit <span *ngIf="apiLoading" class="loader ms-1"></span>
         </div>
     </div>
 
-    <div class="bottom-card">
-        <div class="form-wrap clearfix">
-            <div class="form-hld">
-
-                <form [formGroup]="departmentForm" class="form-container px-3" style="font-size: 0.85rem;">
-
-                    <ng-container class="d-flex" *ngFor="let field of departmentFieldData">
-                        <ng-container [ngSwitch]="field.controlType">
-
-                            <mat-form-field *ngSwitchCase="'text'" class="mb-lg-2" [style.width]="field.controlWidth" appearance="outline">
-                                <mat-label class="text-capitalize">{{field.controlLabel}}</mat-label>
-                                <input matInput [formControlName]="field.controlName">
-                                <mat-error *ngIf="departmentForm.get(field.controlName)?.hasError('required')">{{field.controlLabel}} is required</mat-error>
-                            </mat-form-field>
-
-                            <mat-form-field *ngSwitchCase="'select'" class="mb-lg-2" [style.width]="field.controlWidth" appearance="outline">
-                                <mat-label>{{field.controlLabel}}</mat-label>
-                                <mat-select
-                                    class="selectField"
-                                    disableOptionCentering
-                                    panelClass="matDropdown"
-                                    [formControlName]="field.controlName"
-                                >
-                                    <mat-option *ngFor="let option of field.selectOptions | keyvalue" [value]="option.key">{{option.value}}</mat-option>
-                                </mat-select>
-                                <mat-error *ngIf="departmentForm.get(field.controlName)?.hasError('required')">{{field.controlLabel}} is required</mat-error>
-                            </mat-form-field>
-
-                            <mat-form-field *ngSwitchCase="'textarea'" class="mb-lg-1" [style.width]="field.controlWidth" appearance="outline">
-                                <mat-label>{{field.controlLabel}}</mat-label>
-                                <textarea type="field.controlType" rows="2" matInput [formControlName]="field.controlName"></textarea>
-                            </mat-form-field>
-    
-                        </ng-container>
-                    </ng-container>
-
-                    <div class="btn-hld d-flex justify-content-end mt-lg-3" style="width: 100%">
-                        <div (click)="onSubmit()" class="cta primary-bkg mmd text-uppercase" style="min-width: 30%" type="submit">Submit <span *ngIf="apiLoading" class="loader ms-1"></span></div>
-                    </div>
-
-                </form>
-            </div>
-        </div>
-    </div>
-</div>
+</form>

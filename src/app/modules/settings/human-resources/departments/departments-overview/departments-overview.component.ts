@@ -5,10 +5,10 @@ import { MatTableDataSource } from '@angular/material/table';
 import * as Highcharts from 'highcharts';
 import { DatePipe } from '@angular/common';
 import { PayrollSummary } from 'src/app/shared/models/payroll-data';
-import { MatDialog } from '@angular/material/dialog';
 import { HumanResourcesService } from 'src/app/shared/services/hr/human-resources.service';
 import { NotificationService } from 'src/app/shared/services/utils/notification.service';
 import { SharedService } from 'src/app/shared/services/utils/shared.service';
+import { ModalService } from 'src/app/shared/services/utils/modal.service';
 import { DepartmentInfoComponent } from '../department-info/department-info.component';
 
 @Component({
@@ -61,11 +61,11 @@ export class DepartmentsOverviewComponent implements OnInit {
   ]
 
   constructor(
-    public dialog: MatDialog,
+    private modal: ModalService,
     private route: Router,
     private datePipe: DatePipe,
-    @Inject(HumanResourcesService) private hrService: HumanResourcesService, 
-    @Inject(SharedService) private sharedService: SharedService,     
+    @Inject(HumanResourcesService) private hrService: HumanResourcesService,
+    @Inject(SharedService) private sharedService: SharedService,
     @Inject(NotificationService) private notifyService: NotificationService,
   ) { }
 
@@ -92,30 +92,31 @@ export class DepartmentsOverviewComponent implements OnInit {
   
   //Create a new department
   createDepartment() {
-    this.dialog.open(DepartmentInfoComponent, {
-      width: '30%',
-      height: 'auto',
+    this.modal.open(DepartmentInfoComponent, {
+      title: 'Create Department',
+      icon: 'layer',
+      size: 'sm',
       data: {
         name: '',
         staff: this.employees,
-        isExisting: false
+        isExisting: false,
       },
     }).afterClosed().subscribe(() => {
       this.getDepartments();
     });
   }
 
-  //Edit a department
   editDepartment(details: any) {
-    this.dialog.open(DepartmentInfoComponent, {
-      width: '30%',
-      height: 'auto',
+    this.modal.open(DepartmentInfoComponent, {
+      title: 'Edit Department',
+      icon: 'layer',
+      size: 'sm',
       data: {
         name: details.departmentName,
         id: details._id,
         isExisting: true,
         modalInfo: details,
-        staff: this.employees
+        staff: this.employees,
       },
     }).afterClosed().subscribe(() => {
       this.getDepartments();

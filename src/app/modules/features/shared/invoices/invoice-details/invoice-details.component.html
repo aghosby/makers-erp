@@ -1,0 +1,119 @@
+<div class="content-wrap">
+
+    <div class="row-section d-flex justify-content-between align-items-center">
+        <div class="page-header">
+            <span (click)="goBack()" class="back-btn"><i class="bi bi-arrow-left"></i></span>
+            <span *ngIf="invoice">{{ invoice.invoiceNumber }}</span>
+            <span *ngIf="!invoice">Invoice Details</span>
+        </div>
+        <div class="main-actions d-flex align-items-center gap-3" *ngIf="invoice">
+            <span class="status sm" [ngClass]="getStatusClass(invoice.status)">{{ invoice.status }}</span>
+            <div (click)="editInvoice()" class="cta trans-bkg icon md">
+                <span class="icon">
+                    <app-icon [iconName]="'edit'" [iconWidth]="'15'" [iconHeight]="'15'"></app-icon>
+                </span>
+                Edit
+            </div>
+            <div *ngIf="invoice.status !== 'Paid' && invoice.status !== 'Cancelled'"
+                 (click)="markAsPaid()" class="cta primary-bkg icon md">
+                <span class="icon">
+                    <app-icon [iconName]="'badgeCheck'" [iconWidth]="'16'" [iconHeight]="'16'"></app-icon>
+                </span>
+                Mark as Paid
+            </div>
+        </div>
+    </div>
+
+    <div *ngIf="isLoading" class="row-section w-100">
+        <app-loading-data [height]="'15rem'"></app-loading-data>
+    </div>
+
+    <div *ngIf="!isLoading && invoice" class="row-section my-lg-4">
+        <div class="inner-row-hld d-flex justify-content-between align-items-start">
+
+            <!-- Left: Invoice Metadata -->
+            <div class="row-card card-xsm card-ymd">
+                <div class="cont side-cont rd-pd h-auto">
+                    <div class="info major">
+                        <div class="image initials">{{ invoice.invoiceNumber }}</div>
+                        <div class="det mt-lg-3">
+                            <div class="name">{{ invoice.customer }}</div>
+                            <div class="role">{{ invoice.entity }}</div>
+                        </div>
+                    </div>
+                    <div class="info minor mt-lg-3">
+                        <div class="listed-items">
+                            <div class="item">
+                                <span class="label">Invoice Date:</span>
+                                <span class="text">{{ invoice.date | date:'d MMM, y' }}</span>
+                            </div>
+                            <div class="item">
+                                <span class="label">Due Date:</span>
+                                <span class="text" [class.text-danger]="invoice.status === 'Overdue'">
+                                    {{ invoice.dueDate | date:'d MMM, y' }}
+                                </span>
+                            </div>
+                            <div class="item">
+                                <span class="label">Tax Rate:</span>
+                                <span class="text">{{ invoice.taxRate }}%</span>
+                            </div>
+                            <div class="item">
+                                <span class="label">Created By:</span>
+                                <span class="text text-capitalize">{{ invoice.createdBy }}</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="info minor mt-lg-3" *ngIf="invoice.notes">
+                        <div class="item-label mb-1">Notes</div>
+                        <div class="desc-text">{{ invoice.notes }}</div>
+                    </div>
+
+                    <!-- Amount summary -->
+                    <div class="info minor mt-lg-3">
+                        <div class="amount-card">
+                            <div class="amount-row">
+                                <span class="a-label">Subtotal</span>
+                                <span class="a-value">{{ currency }}{{ invoice.subtotal | number:'1.0-0' }}</span>
+                            </div>
+                            <div class="amount-row">
+                                <span class="a-label">Tax</span>
+                                <span class="a-value">{{ currency }}{{ invoice.taxAmount | number:'1.0-0' }}</span>
+                            </div>
+                            <div class="amount-row total-row">
+                                <span class="a-label">Total</span>
+                                <span class="a-value">{{ currency }}{{ invoice.total | number:'1.0-0' }}</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Right: Line Items -->
+            <div class="row-card card-xlg card-ymd">
+                <div class="cont rd-pd h-auto">
+                    <div class="inner-row w-100 d-flex justify-content-between align-items-center mb-lg-3">
+                        <div class="card-title md">Line Items</div>
+                        <span class="minor">{{ invoice.items?.length || 0 }} item(s)</span>
+                    </div>
+
+                    <div class="items-table">
+                        <div class="items-head">
+                            <div class="col-desc">Description</div>
+                            <div class="col-num">Qty</div>
+                            <div class="col-num">Unit Price</div>
+                            <div class="col-num">Amount</div>
+                        </div>
+                        <div *ngFor="let item of invoice.items" class="item-row">
+                            <div class="col-desc">{{ item.description }}</div>
+                            <div class="col-num">{{ item.quantity }}</div>
+                            <div class="col-num">{{ currency }}{{ item.unitPrice | number:'1.0-0' }}</div>
+                            <div class="col-num fw-bold">{{ currency }}{{ item.amount | number:'1.0-0' }}</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+</div>

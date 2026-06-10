@@ -1,0 +1,11 @@
+.sample-chip {
+    display: inline-block;
+    font-family: var(--font-medium);
+    font-size: 0.78rem;
+    letter-spacing: 0.06rem;
+    color: var(--primary);
+    background-color: var(--primary-lightest);
+    border: 1px solid var(--primary-light);
+    border-radius: var(--radius-sm);
+    padding: 0.15rem 0.55rem;
+}

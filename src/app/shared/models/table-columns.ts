@@ -3,7 +3,8 @@ export interface TableColumn {
     label: string,
     order: number,
     columnWidth: any,
-    cellStyle: string,
+    cellStyle?: string,
     sortable: boolean,
-    isSticky?:boolean
+    isSticky?: boolean,
+    hideLabel?: boolean
 }

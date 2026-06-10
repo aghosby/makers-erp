@@ -1,0 +1,321 @@
+// ── Report Tabs ──────────────────────────────────────────────────
+.report-tabs {
+    display: flex;
+    gap: 4px;
+    background: var(--grey-light-tint);
+    border-radius: 10px;
+    padding: 4px;
+    width: fit-content;
+    flex-wrap: wrap;
+    margin-bottom: 1.2rem;
+    border: 1px solid var(--border-grey-md);
+}
+
+.report-tab {
+    padding: 7px 15px;
+    border: none;
+    background: transparent;
+    border-radius: 7px;
+    font-family: var(--font-medium);
+    font-size: 0.78rem;
+    color: var(--text-grey);
+    cursor: pointer;
+    letter-spacing: 0.02rem;
+    transition: var(--transition-norm);
+
+    &.active {
+        background: #fff;
+        color: var(--primary);
+        box-shadow: 0 1px 4px rgba(0,0,0,.08);
+    }
+}
+
+// ── Filter Bar ───────────────────────────────────────────────────
+.filter-bar {
+    gap: 12px;
+    align-items: center;
+
+    .filter-field {
+        min-width: 160px;
+
+        // tighten Material field height to match other pages
+        ::ng-deep .mat-form-field-wrapper {
+            padding-bottom: 0;
+        }
+    }
+
+    .generate-btn {
+        margin-bottom: 1.34em; // align with mat-form-field baseline
+    }
+}
+
+// ── Report Body ──────────────────────────────────────────────────
+.report-body {
+    background: #fff;
+    border: 1px solid var(--border-grey-md);
+    border-radius: var(--radius-md);
+    min-height: 420px;
+    padding: 1.6rem;
+}
+
+// Loading
+.report-loading {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 14px;
+    min-height: 320px;
+    color: var(--text-grey);
+    font-family: var(--font-regular);
+    font-size: 0.85rem;
+
+    .spinner {
+        width: 36px;
+        height: 36px;
+        border: 3px solid var(--border-grey);
+        border-top-color: var(--primary);
+        border-radius: 50%;
+        animation: spin 0.7s linear infinite;
+    }
+
+    @keyframes spin { to { transform: rotate(360deg); } }
+}
+
+// Empty
+.report-empty {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    min-height: 320px;
+    text-align: center;
+
+    app-icon { opacity: 0.3; }
+
+    h3 {
+        font-family: var(--font-medium);
+        font-size: 0.95rem;
+        margin: 0;
+        color: var(--darker);
+    }
+
+    p {
+        font-family: var(--font-regular);
+        font-size: 0.82rem;
+        margin: 0;
+        max-width: 340px;
+        color: var(--text-grey);
+    }
+}
+
+// ── Report Title Bar ─────────────────────────────────────────────
+.report-title-bar {
+    display: flex;
+    align-items: baseline;
+    gap: 14px;
+    margin-bottom: 1.2rem;
+    flex-wrap: wrap;
+    padding-bottom: 0.8rem;
+    border-bottom: 1px solid var(--border-grey-md);
+
+    h3 {
+        font-family: var(--font-bold);
+        font-size: 1rem;
+        color: var(--darker);
+        margin: 0;
+        letter-spacing: 0.02rem;
+    }
+
+    .report-period {
+        font-family: var(--font-regular);
+        font-size: 0.78rem;
+        color: var(--text-grey);
+    }
+}
+
+// ── Statement Lines ──────────────────────────────────────────────
+.statement-lines {
+    border: 1px solid var(--border-grey-md);
+    border-radius: var(--radius-md);
+    overflow: hidden;
+}
+
+.statement-line {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 9px 16px;
+    border-bottom: 1px solid var(--border-grey-md);
+    font-family: var(--font-regular);
+    font-size: 0.82rem;
+    color: var(--darker);
+
+    &:last-child { border-bottom: none; }
+
+    &.line-header {
+        background: var(--grey-light-tint);
+        font-family: var(--font-bold);
+        font-size: 0.7rem;
+        text-transform: uppercase;
+        letter-spacing: 0.06em;
+        color: var(--text-grey);
+        padding: 10px 16px;
+    }
+
+    &.line-indent-1 .line-label { padding-left: 20px; }
+
+    &.line-subtotal {
+        background: var(--grey-light-tint);
+        font-family: var(--font-medium);
+        border-top: 1px solid var(--border-grey-light);
+        .line-amount { font-family: var(--font-medium); }
+    }
+
+    &.line-total {
+        background: var(--primary-lightest);
+        font-family: var(--font-bold);
+        border-top: 2px solid var(--primary);
+        .line-amount { font-family: var(--font-bold); color: var(--primary); }
+    }
+
+    &.line-negative .line-amount { color: var(--warning); }
+}
+
+.line-label { flex: 1; }
+.line-amount { white-space: nowrap; font-variant-numeric: tabular-nums; }
+
+// ── Balance Sheet ─────────────────────────────────────────────────
+.balance-sheet-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 20px;
+    margin-bottom: 16px;
+
+    @media (max-width: 900px) { grid-template-columns: 1fr; }
+}
+
+.bs-column-title {
+    font-family: var(--font-bold);
+    font-size: 0.82rem;
+    color: var(--darker);
+    margin-bottom: 8px;
+    padding-bottom: 6px;
+    border-bottom: 2px solid var(--primary);
+}
+
+.bs-balance-check {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 10px 14px;
+    border-radius: var(--radius-md);
+    font-family: var(--font-medium);
+    font-size: 0.78rem;
+    background: var(--warning-lightest);
+    color: var(--warning);
+
+    &.balanced {
+        background: var(--approved-lightest);
+        color: var(--approved);
+    }
+}
+
+// ── Report Tables ─────────────────────────────────────────────────
+.table-report { overflow-x: auto; }
+
+.report-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-family: var(--font-regular);
+    font-size: 0.82rem;
+    color: var(--darker);
+
+    thead tr {
+        background: var(--grey-light-tint);
+        border-bottom: 2px solid var(--border-grey-light);
+    }
+
+    th {
+        padding: 11px 14px;
+        font-family: var(--font-medium);
+        font-size: 0.7rem;
+        text-transform: uppercase;
+        letter-spacing: 0.05em;
+        color: var(--text-grey);
+        white-space: nowrap;
+    }
+
+    td {
+        padding: 11px 14px;
+        border-bottom: 1px solid var(--border-grey-md);
+        vertical-align: middle;
+    }
+
+    tbody tr:hover { background: var(--bkg-light); }
+
+    .text-right { text-align: right; }
+    .amount-cell { font-variant-numeric: tabular-nums; }
+
+    .account-type-badge {
+        display: inline-block;
+        padding: 2px 8px;
+        border-radius: var(--radius-lg);
+        font-size: 0.7rem;
+        font-family: var(--font-medium);
+
+        &.type-asset     { background: var(--primary-lightest); color: var(--primary); }
+        &.type-liability { background: var(--pending-lightest);  color: var(--pending); }
+        &.type-equity    { background: var(--approved-lightest); color: var(--approved); }
+        &.type-revenue   { background: rgba(155,89,182,.1);      color: #7b1fa2; }
+        &.type-expense   { background: var(--warning-lightest);  color: var(--warning); }
+    }
+
+    .code-cell { font-family: var(--font-medium); color: var(--text-grey); }
+
+    .warn-col   { background: var(--pending-lightest); }
+    .danger-col { background: var(--warning-lightest); }
+    .total-col  { font-family: var(--font-medium); }
+
+    tfoot .totals-row td {
+        font-family: var(--font-bold);
+        font-size: 0.82rem;
+        background: var(--grey-light-tint);
+        border-top: 2px solid var(--border-grey-light);
+        border-bottom: none;
+    }
+
+    tfoot .balance-check-row {
+        td {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            font-family: var(--font-medium);
+            font-size: 0.78rem;
+            color: var(--warning);
+            background: var(--warning-lightest);
+            border: none;
+            padding: 9px 14px;
+        }
+
+        &.balanced td {
+            background: var(--approved-lightest);
+            color: var(--approved);
+        }
+    }
+
+    &.audit-table {
+        .ts-cell   { white-space: nowrap; color: var(--text-grey); font-size: 0.75rem; }
+        .user-cell { font-family: var(--font-medium); text-transform: capitalize; }
+        .ref-cell  { font-family: var(--font-medium); color: var(--primary); }
+        .desc-cell { max-width: 260px; }
+    }
+}
+
+// disabled state for download btn
+.cta.disabled {
+    opacity: 0.45;
+    cursor: not-allowed;
+    pointer-events: none;
+}

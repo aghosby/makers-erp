@@ -77,7 +77,7 @@ export class ProductListComponent implements OnInit {
     },
     {
       key: "supplier",
-      label: "Supplier",
+      label: "Vendor",
       order: 8,
       columnWidth: "12%",
       cellStyle: "width: 100%",

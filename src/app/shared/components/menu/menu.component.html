@@ -70,14 +70,6 @@
                             </a>
                         </li>
 
-                        <li>
-                            <a [routerLink]="['human-resources/general-settings']" routerLinkActive="active">
-                                <span class="icon">
-                                    <svg width="24" height="24" viewBox="0 0 24 24" fill="black" xmlns="http://www.w3.org/2000/svg" [innerHTML]="transformSvg(icons.settings)" class=""></svg>
-                                </span>
-                                <span>Account Settings</span>
-                            </a>
-                        </li>
                         <li (click)="logout()" class="logout">
                             <span class="icon">
                                 <svg width="24" height="24" viewBox="0 0 24 24" fill="black" xmlns="http://www.w3.org/2000/svg" [innerHTML]="transformSvg(icons.logout)" class=""></svg>
@@ -141,6 +133,36 @@
         </div>          
     </div>
 
+    <div *ngIf="activeModule == 'accounting'" class="sub-nav">
+        <div class="logo-container flex-center">
+            <img src="./assets/images/brand/acehr-logo.png" alt="">
+        </div>
+
+        <div class="sub-nav-list">
+            <div class="list-items">
+                <ng-container>
+                    <ul class="list">
+                        <li *ngFor="let link of accountingMenuData">
+                            <a [routerLink]="[link.routeLink]" routerLinkActive="active">
+                                <span class="icon">
+                                    <svg width="24" height="24" viewBox="0 0 24 24" fill="black" xmlns="http://www.w3.org/2000/svg" [innerHTML]="transformSvg(icons[link.icon])" class=""></svg>
+                                </span>
+                                <span>{{link.label}}</span>
+                            </a>
+                        </li>
+
+                        <li (click)="logout()" class="logout">
+                            <span>
+                                <i class="bi bi-box-arrow-left"></i>
+                            </span>
+                            <span>Logout</span>
+                        </li>
+                    </ul>
+                </ng-container>
+            </div>
+        </div>
+    </div>
+
     <div *ngIf="activeModule == 'orders'" class="sub-nav">
         <div class="logo-container flex-center">
             <img src="./assets/images/brand/acehr-logo.png" alt="">
@@ -159,18 +181,10 @@
                             </a>
                         </li>
 
-                        <li>
-                            <a [routerLink]="['settings']" routerLinkActive="active">
-                                <span class="icon">
-                                    <svg width="24" height="24" viewBox="0 0 24 24" fill="black" xmlns="http://www.w3.org/2000/svg" [innerHTML]="transformSvg(icons.settings)" class=""></svg>
-                                </span>
-                                <span>Order Settings</span>
-                            </a>
-                        </li>
                         <li (click)="logout()" class="logout">
                             <span>
                                 <i class="bi bi-box-arrow-left"></i>
-                            </span>   
+                            </span>
                             <span>Logout</span>
                         </li>
                     </ul>
